@@ -1,0 +1,25 @@
+header {
+	height: 50px;
+}
+
+.header-events {
+	height: 50px;
+	margin: auto auto;
+}
+
+.header-event {
+	display: inline-block;
+	margin: 10px;
+}
+
+#app-title {
+	left: 0;
+	font-size: 40px;
+	border-color: white;
+	border-width: 2px;
+	align-self: flex-start;
+}
+
+.header-event i {
+	margin-right: 5px;
+}
