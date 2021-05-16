@@ -1,5 +1,7 @@
 header {
 	height: 50px;
+	margin-bottom: 30px;
+	text-align: left;
 }
 
 .header-events {
@@ -13,13 +15,6 @@ header {
 }
 
 #app-title {
-	left: 0;
 	font-size: 40px;
-	border-color: white;
-	border-width: 2px;
-	align-self: flex-start;
-}
-
-.header-event i {
-	margin-right: 5px;
+	padding-left: 60px;
 }
