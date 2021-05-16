@@ -1,0 +1,51 @@
+header {
+    user-select: none;
+    display: flex;
+    border-bottom: 2px solid black;
+    align-items: flex-end;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.app-name {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.app-name:hover {
+    cursor: pointer;
+}
+
+.first-button {
+    font-size: 20px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.first-button:hover {
+    color: white;
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.second-button {
+    font-size: 20px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.second-button:hover {
+    color: white;
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.chosen {
+    color: #50B8B5;
+}
