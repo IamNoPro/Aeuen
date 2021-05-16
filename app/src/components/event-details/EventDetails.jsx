@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '../Header';
+import EventPreview from './EventPreview';
 
 const EventDetails = () => {
 	return (
@@ -17,6 +18,7 @@ const EventDetails = () => {
 				</div>
 				<div className="col-8 details">
 					<h1>Radiant Guitar</h1>
+					<EventPreview />
 					<img
 						src="../../../assets/guitar-concert-poster.png"
 						alt="Performance Poster"
