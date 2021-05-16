@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import './App.css';
 import Header from "./Header";
 import OtherEvents from "./OtherEvents";
@@ -32,6 +33,18 @@ function App() {
                 </Switch>
             </div>
         </div>
+=======
+import Header from './components/Header'
+import Infosection from './components/InfoSection'
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+function App() {
+  return (
+    <Router>
+    
+      <Header/>
+      <Infosection/>
+    
+>>>>>>> Stashed changes
     </Router>
   );
 }
