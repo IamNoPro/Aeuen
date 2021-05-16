@@ -37,16 +37,21 @@ const EventDetails = () => {
 					<h6>Venue:</h6>
 				</div>
 				<div className="col-2 details">
-					<span>Organizers:</span>
-					<i class="fas fa-user"></i>
-					<span>Playlist:</span>
-					<ol>
-						<li>Heading West</li>
-						<li>Unspoken Peace</li>
-						<li>Awaiting</li>
-						<li>Betty - Taylor Swift</li>
-						<li>Tenerife Sea</li>
-					</ol>
+					<div className="organizers">
+						<span>Organizers:</span>
+						<br />
+						<i class="fas fa-user"></i>
+					</div>
+					<div className="playlist">
+						<span>Playlist:</span>
+						<ol>
+							<li>Heading West</li>
+							<li>Unspoken Peace</li>
+							<li>Awaiting</li>
+							<li>Betty - Taylor Swift</li>
+							<li>Tenerife Sea</li>
+						</ol>
+					</div>
 				</div>
 			</div>
 		</div>

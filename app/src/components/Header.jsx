@@ -8,11 +8,11 @@ const Header = () => {
 			</span>
 			<div className="col-4 header-events">
 				<div className="header-event">
-					<i className="far fa-compass"></i>
+					<i className="far fa-lg fa-compass"></i>
 					<span>Other Events</span>
 				</div>
-				<div className="header-event">
-					<i className="far fa-calendar-check"></i>
+				<div className="header-event header-selected">
+					<i className="far fa-lg fa-calendar-check"></i>
 					<span>My Events</span>
 				</div>
 			</div>

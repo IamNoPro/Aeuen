@@ -15,7 +15,7 @@ const EventPreview = () => {
 				<h6>KAIST Auditorium</h6>
 			</div>
 			<div className="col-1">
-				<i class="fas fa-arrow-circle-right"></i>
+				<i class="fas fa-3x fa-arrow-circle-right"></i>
 			</div>
 		</div>
 	);
