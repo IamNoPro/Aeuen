@@ -1,0 +1,52 @@
+.other-event-container {
+    user-select: none;
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+    font-size: 24px;
+    font-style: normal;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.other-event-container:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.other-event-container:hover .goto-event-button {
+    color: white;
+}
+
+.other-event-container:hover #vertical-bar {
+    background-color: white;
+}
+
+#vertical-bar {
+    width: 7px;
+    height: 80px;
+    background-color: black;
+    margin-right: 15px;
+}
+
+.date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 30px;
+}
+
+.event-location {
+    font-size: 22px;
+}
+
+.event-host {
+    font-size: 18px;
+    color: gray;
+}
+
+.goto-event-button {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}

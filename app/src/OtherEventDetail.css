@@ -1,0 +1,40 @@
+.host-name {
+    margin-left: 8px;
+    font-size: 1.5em;
+}
+
+.poster {
+    align-self: center;
+}
+
+.section {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 1.4em;
+    margin-bottom: 5px;
+}
+
+.section-content {
+    font-size: 1.2em;
+}
+
+.map-container {
+    height: 300px;
+    width: 500px;
+}
+
+.organizers {
+    display: flex
+}
+
+.organizer-avatar {
+    margin-right: 10px;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}

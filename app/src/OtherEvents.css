@@ -1,0 +1,200 @@
+.vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.my-button {
+    width: 190px;
+    height: 40px;
+    font-size: 1.2em;
+    background-color: #50b8b5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.my-button-disabled {
+    width: 190px;
+    height: 40px;
+    font-size: 1.2em;
+    background-color: #BF0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.my-button:hover {
+    background-color: #59a7a5;
+    cursor: pointer;
+}
+
+.content {
+    margin: auto;
+    display: flex;
+    width: 80%;
+}
+
+.left-content {
+    margin-right: 20px;
+    flex-basis: 20%;
+}
+
+.mid-content {
+    flex-basis: 58%;
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    /*max-width: 60%;*/
+}
+
+.right-content {
+    flex-basis: 22%;
+}
+
+.search {
+    /*margin-top: 22px;*/
+    width: 100%;
+    position: relative;
+    display: flex;
+}
+
+.searchTerm {
+    width: 100%;
+    border: 3px solid black;
+    border-right: none;
+    padding: 5px;
+    height: 20px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: black;
+}
+
+.searchTerm:focus{
+    color: black;
+}
+
+.searchButton {
+    width: 40px;
+    height: 36px;
+    border: 1px solid black;
+    background: black;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.title {
+    margin-left: 20px;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.events-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.modal {
+    display: block;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px; /* Could be more or less, depending on screen size */
+}
+
+.my-modal-button-submit {
+    width: 120px;
+    height: 35px;
+    font-size: 1.1em;
+    background-color: #50b8b5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-right: 30px;
+}
+
+.my-modal-button-submit:hover {
+    background-color: #59a7a5;
+    cursor: pointer;
+}
+
+.my-modal-button-cancel {
+    width: 120px;
+    height: 35px;
+    font-size: 1.1em;
+    background-color: white;
+    color: #50b8b5;
+    border-width: thin;
+    border-color: #50b8b5;
+
+    border-radius: 5px;
+}
+
+.my-modal-button-cancel:hover {
+    /*background-color: pink;*/
+    cursor: pointer;
+}
+
+.modal-bottom {
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.my-input {
+    width: 100%;
+    height: 30px;
+    font-size: 1.0em;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.notification-box {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: #6ADD94;
+    height: 132px;
+    width: 380px;
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
+    border-radius: 10px;
+}
+
+.notification-text {
+    margin-left: 10px;
+    margin-right: 10px;
+}
