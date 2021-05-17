@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import Event from './Event';
-import { FaSearch } from 'react-icons/all';
+import { FaSearch, BsPlusCircle } from 'react-icons/all';
 import { Route } from 'react-router-dom';
 import EventDetail from './EventDetail';
 
@@ -34,24 +34,40 @@ const Events = ({ type }) => {
 	return (
 		<>
 			<Route path={`/${type}/:id`}>
-				<EventDetail />
+				<EventDetail type={type} />
 			</Route>
 			<Route path={`/${type}`} exact>
 				<div className={'content'}>
 					<div className={'left-content'}>
-						<div className="search">
-							<input type="text" className="searchTerm" placeholder="Search" />
-							<button type="submit" className="searchButton">
-								<FaSearch />
-							</button>
-						</div>
+						{type === 'other-events' ? (
+							<div className="search">
+								<input
+									type="text"
+									className="searchTerm"
+									placeholder="Search"
+								/>
+								<button type="submit" className="searchButton">
+									<FaSearch />
+								</button>
+							</div>
+						) : (
+							<div>
+								<button type="button" class="btn btn-info action">
+									<div className="icon">
+										<BsPlusCircle />
+									</div>
+									Create
+								</button>
+							</div>
+						)}
 					</div>
 					<div className={'mid-content'}>
-						<span className={'title'}>Browse other events</span>
-						<span>{type}</span>
+						<span className={'title'}>
+							{type === 'my-events' ? 'My Events' : 'Other Events'}
+						</span>
 						<ul className={'events-list'}>
 							{events.map(event => {
-								return <Event event={event} />;
+								return <Event event={event} type={type} />;
 							})}
 						</ul>
 					</div>

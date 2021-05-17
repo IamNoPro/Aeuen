@@ -2,11 +2,11 @@ import React from 'react';
 import { BiRightArrowCircle, FiArrowRightCircle } from 'react-icons/all';
 import { Link, useHistory } from 'react-router-dom';
 
-function Event({ event }) {
+function Event({ event, type }) {
 	let history = useHistory();
 	return (
 		<Link
-			to={`/other-events/${event.id}`}
+			to={`/${type}/${event.id}`}
 			className={'other-event-container my-link'}
 		>
 			<div id={'vertical-bar'} />

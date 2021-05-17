@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BsCheckCircle, FaSearch } from 'react-icons/all';
+import {
+	BsCheckCircle,
+	BsMusicNoteBeamed,
+	BsMusicNoteList,
+	FaHandsHelping,
+	MdLibraryMusic
+} from 'react-icons/all';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
-function EventDetail(props) {
+function EventDetail({ type }) {
 	let [toggleSuggestModal, setToggleSuggestModal] = useState(false);
 	let [toggleRequestModal, setToggleRequestModal] = useState(false);
 
@@ -48,7 +54,7 @@ function EventDetail(props) {
 			'Revolution Comedy',
 			'Creep'
 		],
-		collaboration_status: 'none'
+		collaboration_status: 'COLLABORATE'
 	});
 
 	useEffect(() => {
@@ -195,27 +201,47 @@ function EventDetail(props) {
 			<div className={'left-content'}>
 				<div className={'vertical'}>
 					<button
-						className={'my-button'}
+						type="button"
+						class="btn btn-info action"
 						onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
 					>
-						{' '}
-						SUGGEST SONG{' '}
+						{type === 'my-events' ? (
+							<div>
+								<div className="icon">
+									<BsMusicNoteList />
+								</div>
+								SUGGESTED
+							</div>
+						) : (
+							<div>
+								<div className="icon">
+									<MdLibraryMusic />
+								</div>
+								SUGGEST SONG
+							</div>
+						)}
 					</button>
-					<br />
-					{eventInfo.collaboration_status === 'none' ? (
-						<button
-							className={'my-button'}
-							onClick={() => setToggleRequestModal(!toggleRequestModal)}
-						>
-							{' '}
-							COLLABORATE{' '}
-						</button>
-					) : (
-						<button className={'my-button-disabled'} disabled={true}>
-							{' '}
-							{eventInfo.collaboration_status.toUpperCase()}{' '}
-						</button>
-					)}
+					<button
+						type="button"
+						class="btn btn-info action"
+						onClick={() => setToggleRequestModal(!toggleRequestModal)}
+					>
+						{type === 'my-events' ? (
+							<div>
+								<div className="icon">
+									<BsMusicNoteBeamed />
+								</div>
+								PLAYLIST
+							</div>
+						) : (
+							<div>
+								<div className="icon">
+									<FaHandsHelping />
+								</div>
+								{eventInfo.collaboration_status.toUpperCase()}
+							</div>
+						)}
+					</button>
 				</div>
 			</div>
 			<div className={'mid-content'}>
