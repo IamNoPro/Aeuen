@@ -1,4 +1,5 @@
 import './App.css';
+import EventDetails from './components/event-details/EventDetails';
 import Header from "./Header";
 import OtherEvents from "./OtherEvents";
 import {
@@ -24,7 +25,7 @@ function App() {
                         <OtherEvents />
                     </Route>
                     <Route path={'/my-events'}>
-                        My Events
+                        <EventDetails />
                     </Route>
                     <Route path={'/'}>
                         Home
