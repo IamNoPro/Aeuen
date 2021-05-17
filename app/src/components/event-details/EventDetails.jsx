@@ -1,11 +1,9 @@
 import React from 'react';
-import Header from '../Header';
 import EventPreview from './EventPreview';
 
 const EventDetails = () => {
 	return (
 		<div>
-			<Header />
 			<div className="row">
 				<div className="col-2 buttons">
 					<button type="button" class="btn btn-info action">
