@@ -1,32 +1,38 @@
-import {Nav, NavbarContainer,NavLogo,NavLinks,NavItem,NavMenu,Logo} from './Header.elements';
-const Header = () => {
-    const othereventsimg = require('../images/myimg1.svg').default
-    return (
-        <>
-        <Nav>
-            <NavbarContainer style={{borderBottom:"2px solid black"}}>
-                
-                <NavLogo to="/">
-                    Aeuen
-                    
-                </NavLogo>
-                <NavMenu>
-                <NavLinks to='/otherevents'>
-                    <Logo src={othereventsimg}></Logo>
-                    Other Events
-                </NavLinks> 
-                <NavLinks to='/myevents'>
-                <Logo src={othereventsimg}></Logo>
-                    My Events
-                </NavLinks> 
-                </NavMenu>
-             
-            </NavbarContainer>
-            
-        </Nav>
-        </>
+import React from 'react';
+import { AiOutlineCompass, BiCalendarCheck } from 'react-icons/all';
+import { Link, useLocation } from 'react-router-dom';
 
-    )
+function Header(props) {
+	let location = useLocation();
+	console.log(location.pathname);
+	let path = location.pathname.split('/');
+	console.log(path);
+	return (
+		<header>
+			<Link to={'/'} style={{ textDecoration: 'none', color: 'inherit' }}>
+				<span className={'app-name'}> Aeuen </span>
+			</Link>
+
+			<Link
+				to={'/other-events'}
+				className={`first-button my-link ${
+					path[1] == 'other-events' ? 'chosen' : ''
+				}`}
+			>
+				<AiOutlineCompass />
+				<span style={{ marginLeft: 5 }}> Other Events </span>
+			</Link>
+			<Link
+				to={'/my-events'}
+				className={`second-button my-link ${
+					path[1] == 'my-events' ? 'chosen' : ''
+				}`}
+			>
+				<BiCalendarCheck />
+				<span style={{ marginLeft: 5 }}> My Events </span>
+			</Link>
+		</header>
+	);
 }
 
-export default Header
+export default Header;

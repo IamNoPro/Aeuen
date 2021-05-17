@@ -1,0 +1,39 @@
+.buttons {
+	flex-direction: column;
+	display: flex;
+	align-items: center;
+}
+
+.action {
+	margin-bottom: 10px;
+	width: 180px;
+	align-items: flex-start;
+	display: flex;
+}
+
+.icon {
+	margin-right: 10px;
+	display: inline;
+}
+
+.details {
+	text-align: left;
+	flex-direction: column;
+	display: flex;
+}
+
+.vertical-bar {
+	width: 5px;
+	background-color: white;
+	height: 50px;
+}
+
+.date {
+	text-align: center;
+	flex-direction: column;
+	display: flex;
+}
+
+.organizers {
+	margin-bottom: 10px;
+}
