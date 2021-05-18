@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import Event from './Event';
 import { FaSearch, BsPlusCircle } from 'react-icons/all';
-import { Route } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import EventDetail from './EventDetail';
 
 const Events = ({ type }) => {
@@ -52,12 +52,14 @@ const Events = ({ type }) => {
 							</div>
 						) : (
 							<div>
-								<button type="button" class="btn btn-info action">
-									<div className="icon">
-										<BsPlusCircle />
-									</div>
-									Create
-								</button>
+								<Link to='/create-event'>
+									<button type="button" class="btn btn-info action">
+										<div className="icon">
+											<BsPlusCircle />
+										</div>
+										Create
+									</button>
+								</Link>
 							</div>
 						)}
 					</div>
