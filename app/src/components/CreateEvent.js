@@ -11,7 +11,10 @@ const CreateEvent = (props) => {
     const [startDate, setStartDate] = useState(new Date());
     const [startTime, setStartTime] = useState('10:00');
     const [endTime, setEndTime] = useState('10:00');
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState({
+        name: null,
+        file: null
+    });
 	const [toggleCreateModal, setToggleCreateModal] = useState(false);
 
     const onStartTimeChange = (event) => {
@@ -25,8 +28,11 @@ const CreateEvent = (props) => {
     }
 
     const onChangeFile = (event) => {
-        console.log('selected file', event.target.name);
-        setSelectedFile(event.target.value);
+        console.log('selected file', event.target.files[0]);
+        setSelectedFile({
+                        name: event.target.files[0].name,
+                        file: URL.createObjectURL(event.target.files[0])
+                    });
     }
 
     return (
@@ -53,13 +59,12 @@ const CreateEvent = (props) => {
                             <label>
                                 Poster
                             </label>
-                            <label className='form-control-poster' style={{width: selectedFile ? '400px' : '150px'}}>
-                                { selectedFile ? selectedFile : 'Upload Picture'} <i className="fa fa-upload"></i> 
+                            <label className='form-control-poster' style={{width: selectedFile.file ? '400px' : '150px'}}>
+                                { selectedFile.file ? selectedFile.name : 'Upload Picture'} <i className="fa fa-upload"></i> 
                                 <input 
                                     id="upload" 
                                     type="file"
                                     accept="image/*"
-                                    value={selectedFile}
                                     onChange={onChangeFile}
                                 />
                             </label>
@@ -124,7 +129,7 @@ const CreateEvent = (props) => {
                     </div>
                 </div>
             <div classname='right-content' style={{ marginTop: '100px' }}>
-                { selectedFile ? <img className='poster' src='https://i.imgur.com/RK76Ejg.jpeg' width={300}></img> : null }
+                { selectedFile.file ? <img className='poster' src={selectedFile.file} width={300}></img> : null }
             </div>
         </div>
     )

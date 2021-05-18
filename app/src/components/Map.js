@@ -49,7 +49,7 @@ export default function MyMap() {
           <div>
             <input {...getInputProps({ placeholder: "Type address" }) }/>
             
-            <div style={{margin: '10px'}}>     
+            <div style={{margin: '10px', position: 'absolute', zIndex: 999}}>     
               { loading ? <div>...loading</div> : null }
               
               {suggestions.map(suggestion => {
