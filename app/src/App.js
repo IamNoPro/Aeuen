@@ -1,6 +1,7 @@
 import Header from './components/Header';
 import Events from './components/Events';
 import Infosection from './components/InfoSection';
+import CreateEvent from './components/CreateEvent';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 // import 'antd/dist/antd.css';
@@ -21,6 +22,10 @@ function App() {
 						</Route>
 						<Route path={'/my-events'}>
 							<Events type="my-events" />
+						</Route>
+						<Route path={'/create-event'}>
+							{console.log('as creating event')}
+							<CreateEvent />
 						</Route>
 						<Route path={'/'}>
 							<Infosection />
