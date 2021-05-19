@@ -1,5 +1,11 @@
 import React from 'react';
-import { AiOutlineCompass, BiCalendarCheck } from 'react-icons/all';
+import {
+	AiOutlineCompass,
+	BiCalendarCheck,
+	BiLogIn,
+	BiLogOut,
+	AiOutlineForm
+} from 'react-icons/all';
 import { Link, useLocation } from 'react-router-dom';
 
 function Header(props) {
@@ -12,7 +18,7 @@ function Header(props) {
 			<Link to={'/'} style={{ textDecoration: 'none', color: 'inherit' }}>
 				<span className={'app-name'}> Aeuen </span>
 			</Link>
-
+			{/* 
 			<Link
 				to={'/other-events'}
 				className={`first-button my-link ${
@@ -30,6 +36,14 @@ function Header(props) {
 			>
 				<BiCalendarCheck />
 				<span style={{ marginLeft: 5 }}> My Events </span>
+			</Link> */}
+			<Link to={'/login'} className="first-button my-link">
+				<BiLogIn />
+				<span style={{ marginLeft: 5 }}> Log In </span>
+			</Link>
+			<Link to={'/signup'} className="second-button my-link">
+				<AiOutlineForm />
+				<span style={{ marginLeft: 5 }}> Sign Up </span>
 			</Link>
 		</header>
 	);

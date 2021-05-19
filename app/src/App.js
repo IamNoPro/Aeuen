@@ -4,6 +4,8 @@ import Infosection from './components/InfoSection';
 import CreateEvent from './components/CreateEvent';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import Login from './components/Login';
+import Signup from './components/Signup';
 // import 'antd/dist/antd.css';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -26,6 +28,12 @@ function App() {
 						<Route path={'/create-event'}>
 							{console.log('as creating event')}
 							<CreateEvent />
+						</Route>
+						<Route path={'/login'}>
+							<Login />
+						</Route>
+						<Route path={'/signup'}>
+							<Signup />
 						</Route>
 						<Route path={'/'}>
 							<Infosection />
