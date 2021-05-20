@@ -30,7 +30,8 @@ function App() {
 							<CreateEvent />
 						</Route>
 						<Route path={'/login'}>
-							<Login />
+							<CreateEvent />
+							{/* <Login /> */}
 						</Route>
 						<Route path={'/signup'}>
 							<Signup />
