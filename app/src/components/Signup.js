@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 
+export const isValidEmail = email => {
+	// referenced https://www.simplilearn.com/tutorials/javascript-tutorial/email-validation-in-javascript
+	var validRegex =
+		/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+	return email.match(validRegex) !== null;
+};
+
 const Signup = () => {
 	const [user, setUser] = useState({
 		email: '',
@@ -11,14 +18,15 @@ const Signup = () => {
 	const [errors, setErrors] = useState({
 		email: '',
 		password: '',
-		passwordConfirm: ''
+		passwordConfirm: '',
+		message: ''
 	});
 
 	const onChange = event => {
 		let input = event.target.value;
 		let property = event.target.name;
 		setUser({ ...user, [property]: input });
-		setErrors({ ...errors, [property]: '' });
+		setErrors({ ...errors, [property]: '', message: '' });
 	};
 
 	const onSubmit = () => {
@@ -47,16 +55,10 @@ const Signup = () => {
 
 		auth
 			.createUserWithEmailAndPassword(user.email, user.password)
-			.then(cred => {
-				console.log(cred);
-			});
-	};
-
-	const isValidEmail = email => {
-		// referenced https://www.simplilearn.com/tutorials/javascript-tutorial/email-validation-in-javascript
-		var validRegex =
-			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-		return email.match(validRegex) !== null;
+			.then(() => {
+				window.location.replace('/my-events');
+			})
+			.catch(error => setErrors({ ...errors, message: error }));
 	};
 
 	return (
@@ -66,6 +68,9 @@ const Signup = () => {
 				<div className="container-create">
 					<form className="create-event">
 						<h1 align="center">Sign Up</h1>
+						{errors.message && (
+							<div style={{ color: 'red' }}>{errors.message}</div>
+						)}
 						<div className="form-control">
 							<label>Email</label>
 							<input

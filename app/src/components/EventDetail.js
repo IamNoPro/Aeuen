@@ -202,7 +202,7 @@ function EventDetail({ type }) {
 				<div className={'vertical'}>
 					<button
 						type="button"
-						class="btn btn-info action"
+						className="btn btn-info action"
 						onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
 					>
 						{type === 'my-events' ? (
@@ -223,7 +223,7 @@ function EventDetail({ type }) {
 					</button>
 					<button
 						type="button"
-						class="btn btn-info action"
+						className="btn btn-info action"
 						onClick={() => setToggleRequestModal(!toggleRequestModal)}
 					>
 						{type === 'my-events' ? (
