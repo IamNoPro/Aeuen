@@ -16,8 +16,14 @@ import PlacesAutoComplete, {
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { storage } from '../firebase'
+import firebase from "firebase/app";
+import "firebase/auth";
 
 const CreateEvent = (props) => {
+    let user = firebase.auth().currentUser;
+    let events = firebase.firestore().collection('events')
+    let users = firebase.firestore().collection('users')
+
     const [title, setTitle] = useState(null);
     const [description, setDescription] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
@@ -66,7 +72,7 @@ const CreateEvent = (props) => {
                     });
     }
 
-    const imageUpload = () => {
+    const addFirestore = () => {
         if (!selectedFile.file) return;
         const uploadTask = storage.ref(`images/${selectedFile.name}`).put(selectedFile.file);
         uploadTask.on(
@@ -83,12 +89,36 @@ const CreateEvent = (props) => {
               .getDownloadURL()
               .then(url => {
                 console.log(url)
+                console.log('current user: ' + user)
+                console.log('current user uid: ' + user.uid)
+                let event = {
+                    'title': title,
+                    'description': description,
+                    'organizers': [user.uid],
+                    'location': cooordinates,
+                    'location_name': address,
+                    'start_date': startDate,
+                    'end_date': endDate,
+                    'playlist': [],
+                    'suggestions': [],
+                    'collab_requests': [],
+                    'picture': url,
+                }
+
+
+                events.add(event).then(function(eventRef) {
+                    users.doc(user.uid).update({
+                        'events': firebase.firestore.FieldValue.arrayUnion(eventRef.id)
+                    })
+                    console.log(eventRef.id)
+                })
+                console.log(event)
               })
           }
         )
-    }
+        // add to -> /events/
 
-    const addFirestore = () => {
+        
         console.log(title)
         console.log(description)
         console.log(startDate)
@@ -96,8 +126,6 @@ const CreateEvent = (props) => {
         console.log(selectedFile.name)
         
         console.log(cooordinates)
-
-        imageUpload()
     }
 
     return (
