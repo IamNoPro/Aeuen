@@ -66,7 +66,7 @@ const Signup = () => {
                 console.log('user uid: ' + uid)
 				
 				users.doc(uid).set({
-					'name': 'Alesha Popovich',
+					'name': user.name,
 					'events': [],
 					'picture': url,
 				})

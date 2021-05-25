@@ -21,7 +21,7 @@ function Event({ event, type }) {
 			<div className={'event-content'}>
 				<div className={'event-title'}> {event.title} </div>
 				<div className={'event-location'}> {event.location_name} </div>
-				{(type === 'other-events') && <div className={'event-host'}> By {event.organizers.map((organizer) => organizer.name).join(', ')} </div>}
+				{(type === 'other-events') && <div className={'event-host'}> By {event.organizers[0].name} </div>}
 			</div>
 			<div className={'goto-event-button'}>
 				<FiArrowRightCircle size={50} />

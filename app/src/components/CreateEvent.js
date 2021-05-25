@@ -24,8 +24,8 @@ const CreateEvent = (props) => {
     let events = firebase.firestore().collection('events')
     let users = firebase.firestore().collection('users')
 
-    const [title, setTitle] = useState(null);
-    const [description, setDescription] = useState(null);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [selectedFile, setSelectedFile] = useState({
@@ -163,7 +163,7 @@ const CreateEvent = (props) => {
             )}
                 
             <div className='left-content'/>
-            <div classname='mid-content container-create'>
+            <div className='mid-content container-create'>
                 <div className='container-create'>
                     <form className='create-event'>
                         <h1 align='center'>Create a new event</h1>
@@ -281,9 +281,9 @@ const CreateEvent = (props) => {
                             </button>
                         </div>
                     </form>
-                    </div>
                 </div>
-            <div classname='right-content' style={{ marginTop: '100px' }}>
+            </div>
+            <div className='right-content' style={{ marginTop: '100px' }}>
                 { selectedFile.file ? <img className='poster' src={selectedFile.file} width={300}></img> : null }
             </div>
         </div>

@@ -1,6 +1,6 @@
 .host-name {
     margin-left: 8px;
-    font-size: 1.5em;
+    font-size: 1.4em;
 }
 
 .poster {
@@ -33,6 +33,7 @@
 
 .organizer-avatar {
     margin-right: 10px;
+    border-radius: 50%;
 }
 
 .clickable:hover {

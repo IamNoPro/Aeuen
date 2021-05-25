@@ -8,8 +8,92 @@ import {
 } from 'react-icons/all';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '../css/EventDetail.css';
+import { useLocation } from 'react-router-dom';
+import {db} from '../firebase';
+import SuggestSong from "../modals/SuggestSong";
+import RequestCollaboration from "../modals/RequestCollaboration";
+
+// {
+// 	id: 0,
+// 		title: 'Big Concert',
+// 	location: 'KAIST Auditorium',
+// 	host: 'Nick',
+// 	date: '10th August, Friday',
+// 	poster: 'https://i.imgur.com/RK76Ejg.jpeg',
+// 	description:
+// 	'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad aliquid laboriosam minus, nisi reiciendis sit! Distinctio eaque rerum sint. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur ea facilis, laudantium natus nisi nobis repellat suscipit unde! Alias asperiores aspernatur, at beatae corporis doloremque doloribus, dolorum impedit magni minima molestias nam natus neque non quas qui repellat sit. Alias cum earum, hic in molestias nam officiis quasi qui voluptatibus!',
+// 		longitude: -70.9,
+// 	latitude: 42.35,
+// 	organizers: [
+// 	{
+// 		name: 'Nick',
+// 		avatar: 'https://i.imgur.com/Xj5Xlzl.png'
+// 	},
+// 	{
+// 		name: 'Anna',
+// 		avatar: 'https://i.imgur.com/yauts06.png'
+// 	},
+// 	{
+// 		name: 'Ram',
+// 		avatar: 'https://i.imgur.com/xSwipN7.png'
+// 	}
+// ],
+// 	playlist: [
+// 	'Hammer and Nail',
+// 	'Larger Than Life',
+// 	'Temporary Saint',
+// 	'Dreams',
+// 	'Mule',
+// 	'Beautiful Broken',
+// 	'Revolution Comedy',
+// 	'Creep'
+// ],
+// 	collaboration_status: 'COLLABORATE'
+// }
 
 function EventDetail({ type }) {
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+
+	const days = [
+		'Sun',
+		'Mon',
+		'Tue',
+		'Wed',
+		'Thu',
+		'Fri',
+		'Sat'
+	];
+
+	const getCollaborationStatus = () => {
+		// TODO
+		return 'REQUEST';
+	}
+
+	const formatted = (date) => {
+		const monthName = months[date.getMonth()];
+		const dayName = days[date.getDay()];
+		let hours = String(date.getHours());
+		let minutes = String(date.getMinutes());
+		if(hours.length < 2) hours = '0' + hours;
+		if(minutes.length < 2) minutes = '0' + minutes;
+		return `${hours}:${minutes}, ${dayName}, ${date.getDate()} ${monthName} ${date.getFullYear()}`;
+	}
+
+	let location = useLocation();
+
 	let [toggleSuggestModal, setToggleSuggestModal] = useState(false);
 	let [toggleRequestModal, setToggleRequestModal] = useState(false);
 
@@ -19,58 +103,58 @@ function EventDetail({ type }) {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
-	const zoom = 4;
-	const [eventInfo, setEventInfo] = useState({
-		id: 0,
-		title: 'Big Concert',
-		location: 'KAIST Auditorium',
-		host: 'Nick',
-		date: '10th August, Friday',
-		poster: 'https://i.imgur.com/RK76Ejg.jpeg',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad aliquid laboriosam minus, nisi reiciendis sit! Distinctio eaque rerum sint. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur ea facilis, laudantium natus nisi nobis repellat suscipit unde! Alias asperiores aspernatur, at beatae corporis doloremque doloribus, dolorum impedit magni minima molestias nam natus neque non quas qui repellat sit. Alias cum earum, hic in molestias nam officiis quasi qui voluptatibus!',
-		longitude: -70.9,
-		latitude: 42.35,
-		organizers: [
-			{
-				name: 'Nick',
-				avatar: 'https://i.imgur.com/Xj5Xlzl.png'
-			},
-			{
-				name: 'Anna',
-				avatar: 'https://i.imgur.com/yauts06.png'
-			},
-			{
-				name: 'Ram',
-				avatar: 'https://i.imgur.com/xSwipN7.png'
-			}
-		],
-		playlist: [
-			'Hammer and Nail',
-			'Larger Than Life',
-			'Temporary Saint',
-			'Dreams',
-			'Mule',
-			'Beautiful Broken',
-			'Revolution Comedy',
-			'Creep'
-		],
-		collaboration_status: 'COLLABORATE'
-	});
+	const zoom = 15;
+	const [eventInfo, setEventInfo] = useState(null);
 
 	useEffect(() => {
-		if (map.current) return;
-		console.log('entered!!');
-		map.current = new mapboxgl.Map({
-			container: mapContainer.current,
-			style: 'mapbox://styles/mapbox/streets-v11',
-			center: [eventInfo.longitude, eventInfo.latitude],
-			zoom: zoom
-		});
-		console.log(map);
+		if(!eventInfo) return;
+		if (map.current) {
+			console.log('setting center?');
+			map.current.flyTo({center: [eventInfo.location.lng ? eventInfo.location.lng : 127.356424, eventInfo.location.lat ? eventInfo.location.lat : 36.368490]});
+		} else {
+			console.log('creating a map!!');
+			map.current = new mapboxgl.Map({
+				container: mapContainer.current,
+				style: 'mapbox://styles/mapbox/streets-v11',
+				center: [eventInfo.location.lng ? eventInfo.location.lng : 127.356424, eventInfo.location.lat ? eventInfo.location.lat : 36.368490],
+				zoom: zoom
+			});
+		}
+		// console.log(map);
 	}, [eventInfo]);
 
-	let modals = [];
+	useEffect(() => {
+		console.log('another useEffect!');
+		let tmp = location.pathname.split('/');
+		let event_id = tmp[tmp.length - 1];
+		db.collection('events').doc(event_id).get().then(async (querySnapshot) => {
+			let event = querySnapshot.data();
+			let copy_event = {...event};
+			copy_event.organizers = await Promise.all(event.organizers.map(async (organizer) => {
+				let userSnapshot = await db.collection('users').doc(organizer).get();
+				return userSnapshot.data();
+			}));
+			setEventInfo(copy_event);
+		});
+	}, [location.pathname]);
+
+	let modals = [
+		<SuggestSong
+			key={1}
+			setToggleSuggestModal={setToggleSuggestModal}
+			toggleSuggestModal={toggleSuggestModal}
+			setSuggestedSong={setSuggestedSong}
+			suggestedSong={suggestedSong}
+		/>,
+		<RequestCollaboration
+			key={2}
+			setToggleRequestModal={setToggleRequestModal}
+			toggleRequestModal={toggleRequestModal}
+			setRequestedCollaboration={setRequestedCollaboration}
+			requestedCollaboration={requestedCollaboration}
+			eventInfo={eventInfo}
+		/>
+	];
 
 	if (suggestedSong) {
 		setTimeout(() => {
@@ -83,122 +167,22 @@ function EventDetail({ type }) {
 			setRequestedCollaboration(false);
 		}, 5000);
 	}
+	if(eventInfo === null) {
+		return (
+			<div className="centered spinner-border" role="status">
+				<span className="sr-only">Loading...</span>
+			</div>
+		);
+	}
+
+	let starting_date = new Date(eventInfo.start_date.seconds * 1000);
+	let ending_date = new Date(eventInfo.end_date.seconds * 1000);
+
+	console.log(eventInfo);
 
 	return (
 		<div className={'content'}>
-			{toggleSuggestModal && (
-				<div
-					id="myModal"
-					className={'modal'}
-					onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
-				>
-					<div className={'modal-content'} onClick={e => e.stopPropagation()}>
-						<span
-							className={'close'}
-							onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
-						>
-							{' '}
-							&times;
-						</span>
-						<h1> Suggest any song </h1>
-						<h4> Your suggestion: </h4>
-						<input
-							className={'my-input'}
-							type={'text'}
-							placeholder={'Type in the name of your song/songs'}
-						/>
-						<br />
-						<div className={'modal-bottom'}>
-							<button
-								className={'my-modal-button-submit'}
-								onClick={() => {
-									setToggleSuggestModal(!toggleSuggestModal);
-									setSuggestedSong(true);
-								}}
-							>
-								{' '}
-								SUGGEST{' '}
-							</button>
-							<button
-								className={'my-modal-button-cancel'}
-								onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
-							>
-								{' '}
-								CANCEL{' '}
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
-			{suggestedSong && (
-				<div className={'notification-box'}>
-					<BsCheckCircle size={100} />
-					<div className={'notification-text'}>
-						<h1> Success </h1>
-						<h3> Songs were successfully suggested! </h3>
-					</div>
-				</div>
-			)}
-			{toggleRequestModal && (
-				<div
-					id="myModal"
-					className={'modal'}
-					onClick={() => setToggleRequestModal(!toggleRequestModal)}
-				>
-					<div className={'modal-content'} onClick={e => e.stopPropagation()}>
-						<span
-							className={'close'}
-							onClick={() => setToggleRequestModal(!toggleRequestModal)}
-						>
-							{' '}
-							&times;
-						</span>
-						<h1>
-							{' '}
-							{`Become a collaborator in ${eventInfo.host}'s ${eventInfo.title}!`}{' '}
-						</h1>
-						<h4> Your message: </h4>
-						<input
-							className={'my-input'}
-							type={'text'}
-							placeholder={'Type in something...'}
-						/>
-						<br />
-						<div className={'modal-bottom'}>
-							<button
-								className={'my-modal-button-submit'}
-								onClick={() => {
-									setToggleRequestModal(!toggleRequestModal);
-									setRequestedCollaboration(true);
-									setEventInfo({
-										...eventInfo,
-										collaboration_status: 'requested'
-									});
-								}}
-							>
-								{' '}
-								REQUEST{' '}
-							</button>
-							<button
-								className={'my-modal-button-cancel'}
-								onClick={() => setToggleRequestModal(!toggleRequestModal)}
-							>
-								{' '}
-								CANCEL{' '}
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
-			{requestedCollaboration && (
-				<div className={'notification-box'}>
-					<BsCheckCircle size={100} />
-					<div className={'notification-text'}>
-						<h1> Success </h1>
-						<h3> Request was successfully sent! </h3>
-					</div>
-				</div>
-			)}
+			{ modals }
 			<div className={'left-content'}>
 				<div className={'vertical'}>
 					<button
@@ -239,7 +223,7 @@ function EventDetail({ type }) {
 								<div className="icon">
 									<FaHandsHelping />
 								</div>
-								{eventInfo.collaboration_status.toUpperCase()}
+								{getCollaborationStatus()}
 							</div>
 						)}
 					</button>
@@ -248,17 +232,21 @@ function EventDetail({ type }) {
 			<div className={'mid-content'}>
 				<span>
 					<span className={'title'}>{eventInfo.title}</span>
-					<span className={'host-name'}>by {eventInfo.host}</span>
+					<span className={'host-name'}>by {eventInfo.organizers[0].name}</span>
 				</span>
 				<br />
-				<img className={'poster'} src={eventInfo.poster} width={400} />
+				<img className={'poster'} src={eventInfo.picture} width={400} />
 				<div className={'section'}>
 					<div className={'section-title'}> Description: </div>
 					<div className={'section-content'}> {eventInfo.description} </div>
 				</div>
 				<div className={'section'}>
-					<div className={'section-title'}> Date: </div>
-					<div className={'section-content'}> {eventInfo.date} </div>
+					<div className={'section-title'}> Starting Date: </div>
+					<div className={'section-content'}> {formatted(starting_date)} </div>
+				</div>
+				<div className={'section'}>
+					<div className={'section-title'}> Ending Date: </div>
+					<div className={'section-content'}> {formatted(ending_date)} </div>
 				</div>
 				<div className={'section'}>
 					<div className={'section-title'}> Venue: </div>
@@ -272,8 +260,9 @@ function EventDetail({ type }) {
 						{eventInfo.organizers.map(organizer => {
 							return (
 								<img
+									key={organizer.name}
 									className={'organizer-avatar'}
-									src={organizer.avatar}
+									src={organizer.picture}
 									height={65}
 									width={65}
 								/>
@@ -284,9 +273,15 @@ function EventDetail({ type }) {
 				<div className={'section'}>
 					<div className={'section-title clickable'}> Playlist: </div>
 					<div className={'section-content'}>
-						{eventInfo.playlist.map((music, index) => {
-							return <div> {`${index}. ${music}`} </div>;
-						})}
+						{
+							eventInfo.playlist.length === 0
+								? <div> Not available </div>
+								:
+								eventInfo.playlist.map((music, index) => {
+									return <div> {`${index}. ${music}`} </div>;
+								})
+
+						}
 					</div>
 				</div>
 			</div>

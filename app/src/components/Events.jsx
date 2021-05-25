@@ -34,7 +34,7 @@ import {auth, db} from '../firebase';
 const Events = ({ type }) => {
 	let user = auth.currentUser;
 
-	const [events, setEvents] = useState([]);
+	const [events, setEvents] = useState(null);
 	let fetchEvents = async () => {
 		let querySnapshot = await db.collection('events').get();
 		let tmp = [];
@@ -60,12 +60,13 @@ const Events = ({ type }) => {
 				return -1;
 			return 0;
 		});
+		console.log(needed_events);
 		setEvents(needed_events);
 	}
 
 	useEffect(() => {
 		if(user) {
-			setEvents([]);
+			setEvents(null);
 			fetchEvents();
 		}
 	}, [type]);
@@ -107,11 +108,27 @@ const Events = ({ type }) => {
 						<span className={'title'}>
 							{type === 'my-events' ? 'My Events' : 'Other Events'}
 						</span>
-						<ul className={'events-list'}>
-							{events.map(event => {
-								return <Event key={event.id} event={event} type={type} />;
-							})}
-						</ul>
+						{
+							events === null
+								? (
+									<div className="centered spinner-border" role="status">
+										<span className="sr-only">Loading...</span>
+									</div>
+								)
+								: events.length === 0
+									? (
+										<div className={'centered'}>
+											<span> No events here yet! </span>
+										</div>
+									)
+									: (
+										<ul className={'events-list'}>
+											{events.map(event => {
+												return <Event key={event.id} event={event} type={type} />;
+											})}
+										</ul>
+									)
+						}
 					</div>
 					<div className={'right-content'}></div>
 				</div>
