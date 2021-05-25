@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
+import firebase from "firebase/app";
+import { useHistory } from "react-router-dom";
 
 export const isValidEmail = email => {
 	// referenced https://www.simplilearn.com/tutorials/javascript-tutorial/email-validation-in-javascript
@@ -9,6 +11,9 @@ export const isValidEmail = email => {
 };
 
 const Signup = () => {
+	let history = useHistory();
+    let users = firebase.firestore().collection('users');
+
 	const [user, setUser] = useState({
 		email: '',
 		name: '',
@@ -61,8 +66,15 @@ const Signup = () => {
 
 		auth
 			.createUserWithEmailAndPassword(user.email, user.password)
-			.then(() => {
-				window.location.replace('/my-events');
+			.then(function(data) {
+				console.log(data.user.uid);
+				
+				users.doc(data.user.uid).set({
+					'name': 'Alesha Popovich',
+					'events': []
+				})
+				
+				history.push("/my-events");
 			})
 			.catch(error => setErrors({ ...errors, message: error }));
 	};
