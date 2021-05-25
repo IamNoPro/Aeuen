@@ -45,6 +45,9 @@ const Signup = () => {
 
     const addFirestore = (uid) => {
         if (!selectedFile.file) return;
+		
+		console.log(selectedFile.file);
+
         const uploadTask = storage.ref(`profile_images/${selectedFile.name}`).put(selectedFile.file);
         uploadTask.on(
           "state_changed",
@@ -214,6 +217,9 @@ const Signup = () => {
 						</div>
 					</form>
 				</div>
+				<div classname='right-content' style={{ marginTop: '100px', marginLeft: '50px' }}>
+                	{ selectedFile.file ? <img className='poster' src={selectedFile.file} width={300}></img> : null }
+            	</div>
 			</div>
 	);
 };
