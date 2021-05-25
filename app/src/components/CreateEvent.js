@@ -1,32 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import '../css/CreateEvent.css';
 import { Link } from 'react-router-dom';
 
-import MyMap from "./Map";
+import DateFnsUtils from '@date-io/date-fns'; // choose your lib
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+
+import PlacesAutoComplete, {
+    geocodeByAddress,
+    getLatLng
+} from 'react-places-autocomplete';
+  
+import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+
+import { storage } from '../firebase'
 
 const CreateEvent = (props) => {
     const [title, setTitle] = useState(null);
     const [description, setDescription] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
-    const [startTime, setStartTime] = useState('10:00');
-    const [endTime, setEndTime] = useState('10:00');
+    const [endDate, setEndDate] = useState(new Date());
     const [selectedFile, setSelectedFile] = useState({
         name: null,
         file: null
     });
 	const [toggleCreateModal, setToggleCreateModal] = useState(false);
+    const [address, setAddress] = useState('');
+    const [cooordinates, setCoordinates] = useState({
+      lat: null,
+      lng: null
+    });
+  
+	const mapContainer = useRef(null);
+	const map = useRef(null);
+    const zoom = 4;
 
-    const onStartTimeChange = (event) => {
-        console.log('Star time = ', event.target.value);
-        setStartTime(event.target.value);
-    }
+	useEffect(() => {
+		if (map.current) return;
+		map.current = new mapboxgl.Map({
+			container: mapContainer.current,
+			style: 'mapbox://styles/mapbox/streets-v11',
+			zoom: zoom
+		});
+		console.log(map);
+	});
+  
+    const handleSelect = async (value) => {
+        const results = await geocodeByAddress(value);
+        const latLng = await getLatLng(results[0]);
+    
+        setAddress(value);
+        setCoordinates(latLng);
 
-    const onEndTimeChange = (event) => {
-        console.log('End time = ', event.target.value);
-        setEndTime(event.target.value);
+        map.current.setCenter([latLng['lng'], latLng['lat']]);
+        map.current.setZoom(15);
     }
 
     const onChangeFile = (event) => {
@@ -35,6 +64,40 @@ const CreateEvent = (props) => {
                         name: event.target.files[0].name,
                         file: URL.createObjectURL(event.target.files[0])
                     });
+    }
+
+    const imageUpload = () => {
+        if (!selectedFile.file) return;
+        const uploadTask = storage.ref(`images/${selectedFile.name}`).put(selectedFile.file);
+        uploadTask.on(
+          "state_changed",
+          snapshot => {
+          },
+          error => {
+            console.log(error)
+          },
+          () => {
+            storage
+              .ref("images")
+              .child(selectedFile.name)
+              .getDownloadURL()
+              .then(url => {
+                console.log(url)
+              })
+          }
+        )
+    }
+
+    const addFirestore = () => {
+        console.log(title)
+        console.log(description)
+        console.log(startDate)
+        console.log(endDate)
+        console.log(selectedFile.name)
+        
+        console.log(cooordinates)
+
+        imageUpload()
     }
 
     return (
@@ -52,12 +115,12 @@ const CreateEvent = (props) => {
                             <h2> Event Succesfully Created </h2>
                             
                             <div className={'modal-bottom'}>
-                                <Link to='my-events'>
+                                <Link to='/my-events'>
                                     <button
                                         className={'my-modal-button-submit'}
                                         onClick={() => {
                                             setToggleCreateModal(!toggleCreateModal)
-                                            
+                                            addFirestore()
                                         }}
                                     >
                                         {' '}
@@ -114,34 +177,64 @@ const CreateEvent = (props) => {
                         </div>
 
                         <div className='form-control'>
-                            <label>Date</label>
-                            <DatePicker
-                                selected={startDate}
-                                onChange={date => setStartDate(date)}
-                            />
+                            <label>Start Date & Time</label>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <DateTimePicker
+                                    value={startDate}
+                                    onChange={setStartDate}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                         </div>
 
-                        <div className='form-control form-control-time'>
-                            <label>Start Time</label>
-                            <input
-                                type="time"
-                                value={startTime}
-                                onChange={onStartTimeChange}
-                            />
-                        </div>
-                        
-                        <div className='form-control form-control-time'>
-                            <label>End Time</label>
-                            <input
-                                type="time"
-                                value={endTime}
-                                onChange={onEndTimeChange}
-                            />
+                        <div className='form-control'>
+                            <label>End Date & Time</label>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <DateTimePicker
+                                    value={endDate}
+                                    onChange={setEndDate}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                         </div>
                         
                         <div className='form-control'>
                             <label>Location</label>
-                            <MyMap />
+                            <div>
+                                <PlacesAutoComplete 
+                                    value={address} 
+                                    onChange={setAddress} 
+                                    onSelect={handleSelect}
+                                >
+                                    {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                    <div>
+                                        <input {...getInputProps({ placeholder: "Type address" }) }/>
+                                        
+                                        <div style={{margin: '10px', position: 'absolute', zIndex: 999}}>     
+                                            { loading ? <div>...loading</div> : null }
+                                            
+                                            { suggestions.map(suggestion => {
+                                                const style = {
+                                                backgroundColor: suggestion.active ? "#41b6e6" : "#fff"
+                                                };
+                                                
+                                                return (
+                                                    <div {...getSuggestionItemProps( suggestion, { style })}>
+                                                        {suggestion.description}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        <div className={'map-container'} ref={mapContainer} />
+                                    </div>
+                                    )}
+                                </PlacesAutoComplete>
+                            </div>
                         </div>
                         
                         <div style={{marginLeft: '150px'}}>
