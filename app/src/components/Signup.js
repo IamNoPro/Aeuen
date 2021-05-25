@@ -11,12 +11,14 @@ export const isValidEmail = email => {
 const Signup = () => {
 	const [user, setUser] = useState({
 		email: '',
+		name: '',
 		password: '',
 		passwordConfirm: ''
 	});
 
 	const [errors, setErrors] = useState({
 		email: '',
+		name: '',
 		password: '',
 		passwordConfirm: '',
 		message: ''
@@ -46,6 +48,10 @@ const Signup = () => {
 		}
 		if (user.password !== user.passwordConfirm) {
 			currentErrors.passwordConfirm = 'Passwords must be the same';
+			validInputs = false;
+		}
+		if (user.name.length === 0) {
+			currentErrors.name = 'Full Name cannot be empty';
 			validInputs = false;
 		}
 		if (!validInputs) {
@@ -83,6 +89,18 @@ const Signup = () => {
 							{errors.email && (
 								<div style={{ color: 'red' }}>{errors.email}</div>
 							)}
+						</div>
+
+						<div className="form-control">
+							<label>Full Name</label>
+							<input
+								name="name"
+								type="text"
+								placeholder="Elon Musk"
+								value={user.name}
+								onChange={onChange}
+							/>
+							{errors.name && <div style={{ color: 'red' }}>{errors.name}</div>}
 						</div>
 
 						<div className="form-control">
