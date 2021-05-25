@@ -7,12 +7,8 @@ import PlacesAutoComplete, {
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
 
-export default function MyMap() {
-  const [address, setAddress] = React.useState('');
-  const [cooordinates, setCoordinates] = React.useState({
-    lat: null,
-    lng: null
-  });
+const MyMap = (props) => {
+  
 	const mapContainer = useRef(null);
 	const map = useRef(null);
   const zoom = 4;
@@ -31,8 +27,8 @@ export default function MyMap() {
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
   
-    setAddress(value);
-    setCoordinates(latLng);
+    props.setAddress(value);
+    props.setCoordinates(latLng);
 
     map.current.setCenter([latLng['lng'], latLng['lat']]);
     map.current.setZoom(15);
@@ -41,8 +37,8 @@ export default function MyMap() {
   return (
     <div>
       <PlacesAutoComplete 
-        value={address} 
-        onChange={setAddress} 
+        value={props.address} 
+        onChange={props.setAddress} 
         onSelect={handleSelect}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -72,3 +68,5 @@ export default function MyMap() {
     </div>
   );
 }
+
+export default MyMap
