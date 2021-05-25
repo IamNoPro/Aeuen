@@ -66,15 +66,17 @@ const CreateEvent = (props) => {
 
     const onChangeFile = (event) => {
         console.log('selected file', event.target.files[0]);
+
         setSelectedFile({
                         name: event.target.files[0].name,
-                        file: URL.createObjectURL(event.target.files[0])
+                        file: URL.createObjectURL(event.target.files[0]),
+                        raw_file: event.target.files[0]
                     });
     }
 
     const addFirestore = () => {
-        if (!selectedFile.file) return;
-        const uploadTask = storage.ref(`images/${selectedFile.name}`).put(selectedFile.file);
+        if (!selectedFile.raw_file) return;
+        const uploadTask = storage.ref(`images/${selectedFile.name}`).put(selectedFile.raw_file);
         uploadTask.on(
           "state_changed",
           snapshot => {

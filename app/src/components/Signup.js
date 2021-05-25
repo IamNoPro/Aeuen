@@ -44,11 +44,11 @@ const Signup = () => {
 
 
     const addFirestore = (uid) => {
-        if (!selectedFile.file) return;
+        if (!selectedFile.raw_file) return;
 		
-		console.log(selectedFile.file);
+		// console.log(selectedFile.file);
 
-        const uploadTask = storage.ref(`profile_images/${selectedFile.name}`).put(selectedFile.file);
+        const uploadTask = storage.ref(`profile_images/${selectedFile.name}`).put(selectedFile.raw_file);
         uploadTask.on(
           "state_changed",
           snapshot => {
@@ -110,7 +110,12 @@ const Signup = () => {
 				console.log(data.user.uid);
 				
 				addFirestore(data.user.uid);
-				
+
+				users.doc(data.user.uid).set({
+					'name': user.name,
+					'events': []
+				})
+
 				history.push("/my-events");
 			})
 			.catch(error => setErrors({ ...errors, message: error }));
@@ -120,14 +125,15 @@ const Signup = () => {
         console.log('selected file', event.target.files[0]);
         setSelectedFile({
                         name: event.target.files[0].name,
-                        file: URL.createObjectURL(event.target.files[0])
+                        file: URL.createObjectURL(event.target.files[0]),
+						raw_file: event.target.files[0]
                     });
     }
 
 	return (
 		<div className="content">
 			<div className="left-content" />
-				<div classname="mid-content">
+				<div className="mid-content container-create">
 					<form className="create-event">
 						<div className="form-control form-control-login" >
 							<h1 align="center">Sign Up</h1>
@@ -217,7 +223,7 @@ const Signup = () => {
 						</div>
 					</form>
 				</div>
-				<div classname='right-content' style={{ marginTop: '100px', marginLeft: '50px' }}>
+				<div className='right-content' style={{ marginTop: '100px', marginLeft: '50px' }}>
                 	{ selectedFile.file ? <img className='poster' src={selectedFile.file} width={300}></img> : null }
             	</div>
 			</div>

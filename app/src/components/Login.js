@@ -53,7 +53,7 @@ const Login = () => {
 
 	return (
 		<div className="content">
-			<div className="left-content"/>
+			<div className="left-content" />
 				<div className="mid-content">
 					<form className="create-event">
 						<div className="form-control form-control-login" >

@@ -18,7 +18,7 @@ mapboxgl.accessToken =
 function App() {
 	const [userLoggedIn, setUserLoggedIn] = useState(auth.currentUser !== null);
 	auth.onAuthStateChanged(function (user) {
-		console.log(user)
+		// console.log(user)
 		if (user) {
 			setUserLoggedIn(true);
 		} else {
