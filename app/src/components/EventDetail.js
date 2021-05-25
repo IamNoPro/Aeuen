@@ -7,6 +7,7 @@ import {
 	MdLibraryMusic
 } from 'react-icons/all';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import '../css/EventDetail.css';
 
 function EventDetail({ type }) {
 	let [toggleSuggestModal, setToggleSuggestModal] = useState(false);

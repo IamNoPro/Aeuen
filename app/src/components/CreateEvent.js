@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import '../css/CreateEvent.css';
 
 import MyMap from "./Map";
 

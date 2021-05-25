@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import Login from './components/Login';
 import Signup from './components/Signup';
+import './css/App.css';
 // import 'antd/dist/antd.css';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 

@@ -4,6 +4,7 @@ import Event from './Event';
 import { FaSearch, BsPlusCircle } from 'react-icons/all';
 import { Route, Link } from 'react-router-dom';
 import EventDetail from './EventDetail';
+import '../css/Events.css';
 
 const Events = ({ type }) => {
 	console.log(type);

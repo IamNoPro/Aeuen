@@ -1,6 +1,7 @@
 import React from 'react';
 import { BiRightArrowCircle, FiArrowRightCircle } from 'react-icons/all';
 import { Link, useHistory } from 'react-router-dom';
+import '../css/Event.css';
 
 function Event({ event, type }) {
 	let history = useHistory();

@@ -8,6 +8,7 @@ import {
 } from 'react-icons/all';
 import { Link, useLocation } from 'react-router-dom';
 import { auth } from '../firebase';
+import '../css/header.css';
 
 function Header(props) {
 	const [userLoggedIn, setUserLoggedIn] = useState(auth.currentUser !== null);
