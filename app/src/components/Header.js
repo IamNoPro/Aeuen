@@ -11,19 +11,13 @@ import { auth } from '../firebase';
 import '../css/header.css';
 
 function Header(props) {
-	const [userLoggedIn, setUserLoggedIn] = useState(auth.currentUser !== null);
+	
 	let location = useLocation();
 	console.log(location.pathname);
 	let path = location.pathname.split('/');
 	console.log(path);
 
-	auth.onAuthStateChanged(function (user) {
-		if (user) {
-			setUserLoggedIn(true);
-		} else {
-			setUserLoggedIn(false);
-		}
-	});
+	
 
 	return (
 		<header>
@@ -31,7 +25,7 @@ function Header(props) {
 				<span className={'app-name'}> Aeuen </span>
 			</Link>
 
-			{userLoggedIn && (
+			{props.userLoggedIn && (
 				<Link
 					to={'/other-events'}
 					className={`first-button my-link ${
@@ -42,7 +36,7 @@ function Header(props) {
 					<span style={{ marginLeft: 5 }}> Other Events </span>
 				</Link>
 			)}
-			{userLoggedIn && (
+			{props.userLoggedIn && (
 				<Link
 					to={'/my-events'}
 					className={`second-button my-link ${
@@ -54,7 +48,7 @@ function Header(props) {
 				</Link>
 			)}
 
-			{userLoggedIn && (
+			{props.userLoggedIn && (
 				<Link
 					to={'/'}
 					onClick={() =>
@@ -77,13 +71,13 @@ function Header(props) {
 				</Link>
 			)}
 
-			{!userLoggedIn && (
+			{!props.userLoggedIn && (
 				<Link to={'/login'} className="first-button my-link">
 					<BiLogIn />
 					<span style={{ marginLeft: 5 }}> Log In </span>
 				</Link>
 			)}
-			{!userLoggedIn && (
+			{!props.userLoggedIn && (
 				<Link to={'/signup'} className="second-button my-link">
 					<AiOutlineForm />
 					<span style={{ marginLeft: 5 }}> Sign Up </span>

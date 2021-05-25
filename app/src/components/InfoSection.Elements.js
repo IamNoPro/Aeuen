@@ -3,14 +3,14 @@ import {Link} from 'react-router-dom'
 
 export const Container =styled.div `
 z-index:1;
-margin-top:1rem;
+margin-top:0px;
 width:80%;
 height:100%;
 max-width:1300px;
 margin-right:auto;
 margin-left:auto;
-padding-right:50px;
-padding-left: 50px;
+
+
 `
 export const InfoRow = styled.div `
 display:flex;
@@ -28,7 +28,7 @@ max-width:50%;
 flex-basis:50%;
 
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1068px) {
 
     max-width:100%;
     flex-basis:100%;
