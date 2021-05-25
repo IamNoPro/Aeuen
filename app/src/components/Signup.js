@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { auth } from '../firebase';
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
+import { storage } from '../firebase'
 
 export const isValidEmail = email => {
 	// referenced https://www.simplilearn.com/tutorials/javascript-tutorial/email-validation-in-javascript
@@ -29,12 +30,48 @@ const Signup = () => {
 		message: ''
 	});
 
+	const [selectedFile, setSelectedFile] = useState({
+        name: null,
+        file: null
+    });
+
 	const onChange = event => {
 		let input = event.target.value;
 		let property = event.target.name;
 		setUser({ ...user, [property]: input });
 		setErrors({ ...errors, [property]: '', message: '' });
 	};
+
+
+    const addFirestore = (uid) => {
+        if (!selectedFile.file) return;
+        const uploadTask = storage.ref(`profile_images/${selectedFile.name}`).put(selectedFile.file);
+        uploadTask.on(
+          "state_changed",
+          snapshot => {
+          },
+          error => {
+            console.log(error)
+          },
+          () => {
+            storage
+              .ref("profile_images")
+              .child(selectedFile.name)
+              .getDownloadURL()
+              .then(url => {
+                console.log(url)
+                console.log('user uid: ' + uid)
+				
+				users.doc(uid).set({
+					'name': 'Alesha Popovich',
+					'events': [],
+					'picture': url,
+				})
+
+              })
+          }
+        )
+		}
 
 	const onSubmit = () => {
 		let validInputs = true;
@@ -69,15 +106,20 @@ const Signup = () => {
 			.then(function(data) {
 				console.log(data.user.uid);
 				
-				users.doc(data.user.uid).set({
-					'name': 'Alesha Popovich',
-					'events': []
-				})
+				addFirestore(data.user.uid);
 				
 				history.push("/my-events");
 			})
 			.catch(error => setErrors({ ...errors, message: error }));
 	};
+
+	const onChangeFile = (event) => {
+        console.log('selected file', event.target.files[0]);
+        setSelectedFile({
+                        name: event.target.files[0].name,
+                        file: URL.createObjectURL(event.target.files[0])
+                    });
+    }
 
 	return (
 		<div className="content">
@@ -144,6 +186,21 @@ const Signup = () => {
 								<div style={{ color: 'red' }}>{errors.passwordConfirm}</div>
 							)}
 						</div>
+
+						<div className='form-control form-control-login'>
+                            <label>
+                                Profile Picture
+                            </label>
+                            <label className='form-control-poster' style={{width: selectedFile.file ? '275px' : '150px'}}>
+                                { selectedFile.file ? selectedFile.name : 'Upload Picture'} <i className="fa fa-upload"></i> 
+                                <input 
+                                    id="upload" 
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={onChangeFile}
+                                />
+                            </label>
+                        </div>
 
 						<div style={{ marginLeft: '180px' }}>
 							<button
