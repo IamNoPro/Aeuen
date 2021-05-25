@@ -3,6 +3,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import '../css/CreateEvent.css';
+import { Link } from 'react-router-dom';
 
 import MyMap from "./Map";
 
@@ -38,6 +39,36 @@ const CreateEvent = (props) => {
 
     return (
         <div className='content'>
+            { toggleCreateModal && (
+                    <div className={'modal'}> 
+                        <div className={'modal-content'}>
+                            <span
+                                className={'close'}
+                                onClick={() => setToggleCreateModal(!toggleCreateModal)}
+                            >
+                                {' '}
+                                &times;
+                            </span>
+                            <h2> Event Succesfully Created </h2>
+                            
+                            <div className={'modal-bottom'}>
+                                <Link to='my-events'>
+                                    <button
+                                        className={'my-modal-button-submit'}
+                                        onClick={() => {
+                                            setToggleCreateModal(!toggleCreateModal)
+                                            
+                                        }}
+                                    >
+                                        {' '}
+                                        OK{' '}
+                                    </button>
+                                </Link>
+							</div>
+                        </div> 
+                    </div>
+            )}
+                
             <div className='left-content'/>
             <div classname='mid-content container-create'>
                 <div className='container-create'>
