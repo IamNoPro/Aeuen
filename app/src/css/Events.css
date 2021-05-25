@@ -59,6 +59,10 @@
     display: flex;
 }
 
+.search input {
+    height: 36px;
+}
+
 .searchTerm {
     width: 100%;
     border: 3px solid black;

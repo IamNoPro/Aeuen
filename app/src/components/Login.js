@@ -53,15 +53,17 @@ const Login = () => {
 
 	return (
 		<div className="content">
-			<div className="left-content" />
-			<div classname="mid-content container-create">
-				<div className="container-create">
+			<div className="left-content"/>
+				<div className="mid-content">
 					<form className="create-event">
-						<h1 align="center">Log In</h1>
-						{errors.message && (
-							<div style={{ color: 'red' }}>{errors.message}</div>
-						)}
-						<div className="form-control">
+						<div className="form-control form-control-login" >
+							<h1 align="center">Log In</h1>
+							{errors.message && (
+								<div style={{ color: 'red' }}>{errors.message}</div>
+							)}
+						</div>
+
+						<div className="form-control form-control-login">
 							<label>Email</label>
 							<input
 								name="email"
@@ -75,7 +77,7 @@ const Login = () => {
 							)}
 						</div>
 
-						<div className="form-control">
+						<div className="form-control form-control-login">
 							<label>Password</label>
 							<input
 								name="password"
@@ -89,7 +91,7 @@ const Login = () => {
 							)}
 						</div>
 
-						<div style={{ marginLeft: '60px' }}>
+						<div style={{ marginLeft: '180px' }}>
 							<button
 								type="button"
 								value="Sign Up"
@@ -101,8 +103,8 @@ const Login = () => {
 						</div>
 					</form>
 				</div>
+				<div className="right-content"/>
 			</div>
-		</div>
 	);
 };
 
