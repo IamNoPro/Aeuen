@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { useState } from 'react';
 import Event from './Event';
 import { FaSearch, BsPlusCircle } from 'react-icons/all';
-import { Route, Link, Redirect } from 'react-router-dom';
+import { Route, Link, Redirect, useLocation } from 'react-router-dom';
 import EventDetail from './EventDetail';
 import '../css/Events.css';
 import {auth, db} from '../firebase';
@@ -32,16 +32,19 @@ import {auth, db} from '../firebase';
 // ]
 
 const Events = ({ type }) => {
-	let user = auth.currentUser;
-
+	let location = useLocation();
+	let user_uid = location.state.user_uid;
+	if(auth.currentUser)
+		user_uid = auth.currentUser.uid;
+	console.log(user_uid);
 	const [events, setEvents] = useState(null);
 	let fetchEvents = async () => {
 		let querySnapshot = await db.collection('events').get();
 		let tmp = [];
 		querySnapshot.forEach((doc) => {
-			if(doc.data().organizers.includes(user.uid) && type === 'my-events') {
+			if(doc.data().organizers.includes(user_uid) && type === 'my-events') {
 				tmp.push({...doc.data(), id: doc.id});
-			} else if(!doc.data().organizers.includes(user.uid) && type === 'other-events') {
+			} else if(!doc.data().organizers.includes(user_uid) && type === 'other-events') {
 				tmp.push({...doc.data(), id: doc.id});
 			}
 		});
@@ -65,12 +68,12 @@ const Events = ({ type }) => {
 	}
 
 	useEffect(() => {
-		if(user) {
+		if(user_uid) {
 			setEvents(null);
 			fetchEvents();
 		}
 	}, [type]);
-	if(!user)
+	if(!user_uid)
 		return <Redirect to={{pathname: '/login'}}/>
 	return (
 		<>

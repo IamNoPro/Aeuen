@@ -116,7 +116,7 @@ const Signup = () => {
 					'events': []
 				})
 
-				history.push("/my-events");
+				history.push({pathname: "/my-events", state: {user_uid: data.user.uid}});
 			})
 			.catch(error => setErrors({ ...errors, message: error }));
 	};
