@@ -33,7 +33,9 @@ import {auth, db} from '../firebase';
 
 const Events = ({ type }) => {
 	let location = useLocation();
-	let user_uid = location.state.user_uid;
+	let user_uid = null;
+	if (location.state)
+		user_uid = location.state.user_uid;
 	if(auth.currentUser)
 		user_uid = auth.currentUser.uid;
 	console.log(user_uid);
