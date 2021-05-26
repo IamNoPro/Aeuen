@@ -9,9 +9,9 @@ import {
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '../css/EventDetail.css';
 import { useLocation } from 'react-router-dom';
-import {db} from '../firebase';
-import SuggestSong from "../modals/SuggestSong";
-import RequestCollaboration from "../modals/RequestCollaboration";
+import { db } from '../firebase';
+import SuggestSong from '../modals/SuggestSong';
+import RequestCollaboration from '../modals/RequestCollaboration';
 
 // {
 // 	id: 0,
@@ -67,30 +67,22 @@ function EventDetail({ type }) {
 		'December'
 	];
 
-	const days = [
-		'Sun',
-		'Mon',
-		'Tue',
-		'Wed',
-		'Thu',
-		'Fri',
-		'Sat'
-	];
+	const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 	const getCollaborationStatus = () => {
 		// TODO
 		return 'REQUEST';
-	}
+	};
 
-	const formatted = (date) => {
+	const formatted = date => {
 		const monthName = months[date.getMonth()];
 		const dayName = days[date.getDay()];
 		let hours = String(date.getHours());
 		let minutes = String(date.getMinutes());
-		if(hours.length < 2) hours = '0' + hours;
-		if(minutes.length < 2) minutes = '0' + minutes;
+		if (hours.length < 2) hours = '0' + hours;
+		if (minutes.length < 2) minutes = '0' + minutes;
 		return `${hours}:${minutes}, ${dayName}, ${date.getDate()} ${monthName} ${date.getFullYear()}`;
-	}
+	};
 
 	let location = useLocation();
 
@@ -107,16 +99,24 @@ function EventDetail({ type }) {
 	const [eventInfo, setEventInfo] = useState(null);
 
 	useEffect(() => {
-		if(!eventInfo) return;
+		if (!eventInfo) return;
 		if (map.current) {
 			console.log('setting center?');
-			map.current.flyTo({center: [eventInfo.location.lng ? eventInfo.location.lng : 127.356424, eventInfo.location.lat ? eventInfo.location.lat : 36.368490]});
+			map.current.flyTo({
+				center: [
+					eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
+					eventInfo.location.lat ? eventInfo.location.lat : 36.36849
+				]
+			});
 		} else {
 			console.log('creating a map!!');
 			map.current = new mapboxgl.Map({
 				container: mapContainer.current,
 				style: 'mapbox://styles/mapbox/streets-v11',
-				center: [eventInfo.location.lng ? eventInfo.location.lng : 127.356424, eventInfo.location.lat ? eventInfo.location.lat : 36.368490],
+				center: [
+					eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
+					eventInfo.location.lat ? eventInfo.location.lat : 36.36849
+				],
 				zoom: zoom
 			});
 		}
@@ -127,15 +127,24 @@ function EventDetail({ type }) {
 		console.log('another useEffect!');
 		let tmp = location.pathname.split('/');
 		let event_id = tmp[tmp.length - 1];
-		db.collection('events').doc(event_id).get().then(async (querySnapshot) => {
-			let event = querySnapshot.data();
-			let copy_event = {...event};
-			copy_event.organizers = await Promise.all(event.organizers.map(async (organizer) => {
-				let userSnapshot = await db.collection('users').doc(organizer).get();
-				return userSnapshot.data();
-			}));
-			setEventInfo(copy_event);
-		});
+		db.collection('events')
+			.doc(event_id)
+			.get()
+			.then(async querySnapshot => {
+				let event = querySnapshot.data();
+				let copy_event = { ...event };
+				copy_event.organizers = await Promise.all(
+					event.organizers.map(async organizer => {
+						let userSnapshot = await db
+							.collection('users')
+							.doc(organizer)
+							.get();
+						return userSnapshot.data();
+					})
+				);
+				copy_event.id = event_id;
+				setEventInfo(copy_event);
+			});
 	}, [location.pathname]);
 
 	let modals = [
@@ -145,6 +154,8 @@ function EventDetail({ type }) {
 			toggleSuggestModal={toggleSuggestModal}
 			setSuggestedSong={setSuggestedSong}
 			suggestedSong={suggestedSong}
+			eventInfo={eventInfo}
+			setEventInfo={setEventInfo}
 		/>,
 		<RequestCollaboration
 			key={2}
@@ -167,7 +178,7 @@ function EventDetail({ type }) {
 			setRequestedCollaboration(false);
 		}, 5000);
 	}
-	if(eventInfo === null) {
+	if (eventInfo === null) {
 		return (
 			<div className="centered spinner-border" role="status">
 				<span className="sr-only">Loading...</span>
@@ -182,7 +193,7 @@ function EventDetail({ type }) {
 
 	return (
 		<div className={'content'}>
-			{ modals }
+			{modals}
 			<div className={'left-content'}>
 				<div className={'vertical'}>
 					<button
@@ -273,15 +284,13 @@ function EventDetail({ type }) {
 				<div className={'section'}>
 					<div className={'section-title clickable'}> Playlist: </div>
 					<div className={'section-content'}>
-						{
-							eventInfo.playlist.length === 0
-								? <div> Not available </div>
-								:
-								eventInfo.playlist.map((music, index) => {
-									return <div> {`${index}. ${music}`} </div>;
-								})
-
-						}
+						{eventInfo.playlist.length === 0 ? (
+							<div> Not available </div>
+						) : (
+							eventInfo.playlist.map((music, index) => {
+								return <div> {`${index}. ${music}`} </div>;
+							})
+						)}
 					</div>
 				</div>
 			</div>

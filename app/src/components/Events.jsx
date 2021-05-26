@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Event from './Event';
 import { FaSearch, BsPlusCircle } from 'react-icons/all';
 import { Route, Link, Redirect } from 'react-router-dom';
 import EventDetail from './EventDetail';
 import '../css/Events.css';
-import {auth, db} from '../firebase';
+import { auth, db } from '../firebase';
 
 // [
 // 	{
@@ -38,40 +38,47 @@ const Events = ({ type }) => {
 	let fetchEvents = async () => {
 		let querySnapshot = await db.collection('events').get();
 		let tmp = [];
-		querySnapshot.forEach((doc) => {
-			if(doc.data().organizers.includes(user.uid) && type === 'my-events') {
-				tmp.push({...doc.data(), id: doc.id});
-			} else if(!doc.data().organizers.includes(user.uid) && type === 'other-events') {
-				tmp.push({...doc.data(), id: doc.id});
+		querySnapshot.forEach(doc => {
+			if (doc.data().organizers.includes(user.uid) && type === 'my-events') {
+				tmp.push({ ...doc.data(), id: doc.id });
+			} else if (
+				!doc.data().organizers.includes(user.uid) &&
+				type === 'other-events'
+			) {
+				tmp.push({ ...doc.data(), id: doc.id });
 			}
 		});
-		let needed_events = await Promise.all(tmp.map(async (event) => {
-			let copy_event = {...event};
-			copy_event.organizers = await Promise.all(event.organizers.map(async (organizer) => {
-				let userSnapshot = await db.collection('users').doc(organizer).get();
-				return userSnapshot.data();
-			}));
-			return copy_event;
-		}));
-		needed_events.sort(function(a, b) {
-			if(a.start_date.seconds > b.start_date.seconds)
-				return 1;
-			if(a.start_date.seconds < b.start_date.seconds)
-				return -1;
+		let needed_events = await Promise.all(
+			tmp.map(async event => {
+				let copy_event = { ...event };
+				copy_event.organizers = await Promise.all(
+					event.organizers.map(async organizer => {
+						let userSnapshot = await db
+							.collection('users')
+							.doc(organizer)
+							.get();
+						return userSnapshot.data();
+					})
+				);
+				return copy_event;
+			})
+		);
+		needed_events.sort(function (a, b) {
+			if (a.start_date.seconds > b.start_date.seconds) return 1;
+			if (a.start_date.seconds < b.start_date.seconds) return -1;
 			return 0;
 		});
 		console.log(needed_events);
 		setEvents(needed_events);
-	}
+	};
 
 	useEffect(() => {
-		if(user) {
+		if (user) {
 			setEvents(null);
 			fetchEvents();
 		}
 	}, [type]);
-	if(!user)
-		return <Redirect to={{pathname: '/login'}}/>
+	if (!user) return <Redirect to={{ pathname: '/login' }} />;
 	return (
 		<>
 			<Route path={`/${type}/:id`}>
@@ -93,7 +100,7 @@ const Events = ({ type }) => {
 							</div>
 						) : (
 							<div>
-								<Link to='/create-event'>
+								<Link to="/create-event">
 									<button type="button" className="btn btn-info action">
 										<div className="icon">
 											<BsPlusCircle />
@@ -108,27 +115,21 @@ const Events = ({ type }) => {
 						<span className={'title'}>
 							{type === 'my-events' ? 'My Events' : 'Other Events'}
 						</span>
-						{
-							events === null
-								? (
-									<div className="centered spinner-border" role="status">
-										<span className="sr-only">Loading...</span>
-									</div>
-								)
-								: events.length === 0
-									? (
-										<div className={'centered'}>
-											<span> No events here yet! </span>
-										</div>
-									)
-									: (
-										<ul className={'events-list'}>
-											{events.map(event => {
-												return <Event key={event.id} event={event} type={type} />;
-											})}
-										</ul>
-									)
-						}
+						{events === null ? (
+							<div className="centered spinner-border" role="status">
+								<span className="sr-only">Loading...</span>
+							</div>
+						) : events.length === 0 ? (
+							<div className={'centered'}>
+								<span> No events here yet! </span>
+							</div>
+						) : (
+							<ul className={'events-list'}>
+								{events.map(event => {
+									return <Event key={event.id} event={event} type={type} />;
+								})}
+							</ul>
+						)}
 					</div>
 					<div className={'right-content'}></div>
 				</div>
