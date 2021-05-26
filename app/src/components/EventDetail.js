@@ -15,6 +15,7 @@ import SuggestSong from '../modals/SuggestSong';
 import RequestCollaboration from '../modals/RequestCollaboration';
 import RequestsList from '../modals/RequestsList';
 import SuggestedList from '../modals/SuggestedList';
+import Playlist from '../modals/Playlist';
 
 // {
 // 	id: 0,
@@ -103,6 +104,7 @@ function EventDetail({ type }) {
 	// let [toggleRequestModal, setToggleRequestModal] = useState(false);
 
 	let [suggestedSongList, setSuggestedSongList] = useState(false);
+	let [playlistModal, setPlaylistModal] = useState(false);
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
@@ -192,6 +194,12 @@ function EventDetail({ type }) {
 				toggleSuggestListModal={suggestedSongList}
 				eventInfo={eventInfo}
 				setEventInfo={setEventInfo}
+			/>,
+			<Playlist
+				setTogglePlaylistModal={setPlaylistModal}
+				togglePlaylistModal={playlistModal}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
 			/>
 		];
 	}
@@ -243,7 +251,7 @@ function EventDetail({ type }) {
 							<button
 								type="button"
 								className="btn btn-info action"
-								onClick={() => console.log('playlist!')}
+								onClick={() => setPlaylistModal(true)}
 							>
 								<div>
 									<div className="icon">
