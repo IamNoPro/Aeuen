@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { isValidEmail } from './Signup';
+import {useHistory} from "react-router-dom";
 
 const Login = () => {
+	let history = useHistory();
+
 	const [user, setUser] = useState({
 		email: '',
 		password: ''
@@ -22,6 +25,7 @@ const Login = () => {
 	};
 
 	const onSubmit = () => {
+		console.log('on submit!');
 		let validInputs = true;
 		let currentErrors = {
 			email: '',
@@ -43,11 +47,17 @@ const Login = () => {
 
 		auth
 			.signInWithEmailAndPassword(user.email, user.password)
-			.then(() => {
-				window.location.replace('/my-events');
+			.then((data) => {
+				console.log('lolkek?');
+				console.log(data.user);
+				// history.push('/my-events');
+				// history.push("/my-events", {user: data.user});
+				history.push({pathname: "/my-events", state: {user_uid: data.user.uid}});
 			})
-			.catch(() =>
-				setErrors({ ...errors, message: 'Email or password is incorrect' })
+			.catch((error) => {
+					console.log(error);
+					setErrors({ ...errors, message: 'Email or password is incorrect' })
+				}
 			);
 	};
 

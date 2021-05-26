@@ -20,6 +20,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 
 const CreateEvent = (props) => {
+    console.log('create event!!');
     let user = firebase.auth().currentUser;
     let events = firebase.firestore().collection('events')
     let users = firebase.firestore().collection('users')
