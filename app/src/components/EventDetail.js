@@ -69,15 +69,7 @@ function EventDetail({ type }) {
 		'December'
 	];
 
-	const days = [
-		'Sun',
-		'Mon',
-		'Tue',
-		'Wed',
-		'Thu',
-		'Fri',
-		'Sat'
-	];
+	const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 	const getCollaborationStatus = () => {
 		// TODO
@@ -89,17 +81,17 @@ function EventDetail({ type }) {
 				status = collab.status.toUpperCase();
 		});
 		return status;
-	}
+	};
 
-	const formatted = (date) => {
+	const formatted = date => {
 		const monthName = months[date.getMonth()];
 		const dayName = days[date.getDay()];
 		let hours = String(date.getHours());
 		let minutes = String(date.getMinutes());
-		if(hours.length < 2) hours = '0' + hours;
-		if(minutes.length < 2) minutes = '0' + minutes;
+		if (hours.length < 2) hours = '0' + hours;
+		if (minutes.length < 2) minutes = '0' + minutes;
 		return `${hours}:${minutes}, ${dayName}, ${date.getDate()} ${monthName} ${date.getFullYear()}`;
-	}
+	};
 
 	let location = useLocation();
 
@@ -116,16 +108,24 @@ function EventDetail({ type }) {
 	const [eventInfo, setEventInfo] = useState(null);
 
 	useEffect(() => {
-		if(!eventInfo) return;
+		if (!eventInfo) return;
 		if (map.current) {
 			console.log('setting center?');
-			map.current.flyTo({center: [eventInfo.location.lng ? eventInfo.location.lng : 127.356424, eventInfo.location.lat ? eventInfo.location.lat : 36.368490]});
+			map.current.flyTo({
+				center: [
+					eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
+					eventInfo.location.lat ? eventInfo.location.lat : 36.36849
+				]
+			});
 		} else {
 			console.log('creating a map!!');
 			map.current = new mapboxgl.Map({
 				container: mapContainer.current,
 				style: 'mapbox://styles/mapbox/streets-v11',
-				center: [eventInfo.location.lng ? eventInfo.location.lng : 127.356424, eventInfo.location.lat ? eventInfo.location.lat : 36.368490],
+				center: [
+					eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
+					eventInfo.location.lat ? eventInfo.location.lat : 36.36849
+				],
 				zoom: zoom
 			});
 		}
@@ -205,7 +205,7 @@ function EventDetail({ type }) {
 
 	return (
 		<div className={'content'}>
-			{ modals }
+			{modals}
 			<div className={'left-content'}>
 				<div className={'vertical'}>
 					{type === 'my-events' ? (
@@ -322,15 +322,13 @@ function EventDetail({ type }) {
 				<div className={'section'}>
 					<div className={'section-title clickable'}> Playlist: </div>
 					<div className={'section-content'}>
-						{
-							eventInfo.playlist.length === 0
-								? <div> Not available </div>
-								:
-								eventInfo.playlist.map((music, index) => {
-									return <div> {`${index}. ${music}`} </div>;
-								})
-
-						}
+						{eventInfo.playlist.length === 0 ? (
+							<div> Not available </div>
+						) : (
+							eventInfo.playlist.map((music, index) => {
+								return <div> {`${index}. ${music}`} </div>;
+							})
+						)}
 					</div>
 				</div>
 			</div>
