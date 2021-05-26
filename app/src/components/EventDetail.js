@@ -14,6 +14,7 @@ import { auth, db } from '../firebase';
 import SuggestSong from '../modals/SuggestSong';
 import RequestCollaboration from '../modals/RequestCollaboration';
 import RequestsList from '../modals/RequestsList';
+import SuggestedList from '../modals/SuggestedList';
 
 // {
 // 	id: 0,
@@ -101,6 +102,8 @@ function EventDetail({ type }) {
 	let [requestedCollaboration, setRequestedCollaboration] = useState(false);
 	// let [toggleRequestModal, setToggleRequestModal] = useState(false);
 
+	let [suggestedSongList, setSuggestedSongList] = useState(false);
+
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 	const zoom = 15;
@@ -183,6 +186,12 @@ function EventDetail({ type }) {
 				key={1}
 				setToggleRequestModal={setToggleRequestModal}
 				toggleRequestModal={toggleRequestModal}
+			/>,
+			<SuggestedList
+				setToggleSuggestListModal={setSuggestedSongList}
+				toggleSuggestListModal={suggestedSongList}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
 			/>
 		];
 	}
@@ -222,7 +231,7 @@ function EventDetail({ type }) {
 							<button
 								type="button"
 								className="btn btn-info action"
-								onClick={() => console.log('suggested songs!')}
+								onClick={() => setSuggestedSongList(true)}
 							>
 								<div>
 									<div className="icon">
