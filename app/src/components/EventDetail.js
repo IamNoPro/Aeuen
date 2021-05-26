@@ -10,10 +10,10 @@ import {
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '../css/EventDetail.css';
 import { useLocation } from 'react-router-dom';
-import {auth, db} from '../firebase';
-import SuggestSong from "../modals/SuggestSong";
-import RequestCollaboration from "../modals/RequestCollaboration";
-import RequestsList from "../modals/RequestsList";
+import { auth, db } from '../firebase';
+import SuggestSong from '../modals/SuggestSong';
+import RequestCollaboration from '../modals/RequestCollaboration';
+import RequestsList from '../modals/RequestsList';
 
 // {
 // 	id: 0,
@@ -73,11 +73,10 @@ function EventDetail({ type }) {
 
 	const getCollaborationStatus = () => {
 		// TODO
-		if(!eventInfo)
-			return 'REQUEST';
+		if (!eventInfo) return 'REQUEST';
 		let status = 'REQUEST';
-		eventInfo.collab_requests.forEach((collab) => {
-			if(collab.user_id === auth.currentUser.uid)
+		eventInfo.collab_requests.forEach(collab => {
+			if (collab.user_id === auth.currentUser.uid)
 				status = collab.status.toUpperCase();
 		});
 		return status;
@@ -136,20 +135,28 @@ function EventDetail({ type }) {
 		console.log('another useEffect!');
 		let tmp = location.pathname.split('/');
 		let event_id = tmp[tmp.length - 1];
-		db.collection('events').doc(event_id).get().then(async (querySnapshot) => {
-			let event = querySnapshot.data();
-			let copy_event = {...event};
-			copy_event.organizers = await Promise.all(event.organizers.map(async (organizer) => {
-				let userSnapshot = await db.collection('users').doc(organizer).get();
-				return userSnapshot.data();
-			}));
-			copy_event.id = event_id;
-			setEventInfo(copy_event);
-		});
+		db.collection('events')
+			.doc(event_id)
+			.get()
+			.then(async querySnapshot => {
+				let event = querySnapshot.data();
+				let copy_event = { ...event };
+				copy_event.organizers = await Promise.all(
+					event.organizers.map(async organizer => {
+						let userSnapshot = await db
+							.collection('users')
+							.doc(organizer)
+							.get();
+						return userSnapshot.data();
+					})
+				);
+				copy_event.id = event_id;
+				setEventInfo(copy_event);
+			});
 	}, [location.pathname]);
 
 	let modals = [];
-	if(type === 'other-events') {
+	if (type === 'other-events') {
 		modals = [
 			<SuggestSong
 				key={1}
@@ -157,6 +164,8 @@ function EventDetail({ type }) {
 				toggleSuggestModal={toggleSuggestModal}
 				setSuggestedSong={setSuggestedSong}
 				suggestedSong={suggestedSong}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
 			/>,
 			<RequestCollaboration
 				key={2}
@@ -175,7 +184,7 @@ function EventDetail({ type }) {
 				setToggleRequestModal={setToggleRequestModal}
 				toggleRequestModal={toggleRequestModal}
 			/>
-		]
+		];
 	}
 
 	if (suggestedSong) {
@@ -190,7 +199,7 @@ function EventDetail({ type }) {
 		}, 5000);
 	}
 
-	if(!eventInfo) {
+	if (!eventInfo) {
 		return (
 			<div className="centered spinner-border" role="status">
 				<span className="sr-only">Loading...</span>
@@ -275,7 +284,6 @@ function EventDetail({ type }) {
 							</button>
 						</>
 					)}
-					
 				</div>
 			</div>
 			<div className={'mid-content'}>
