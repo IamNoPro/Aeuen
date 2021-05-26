@@ -12,13 +12,6 @@ function SuggestSong({setToggleSuggestModal, toggleSuggestModal, setSuggestedSon
                         onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
                     >
                         <div className={'modal-content'} onClick={e => e.stopPropagation()}>
-						<span
-                            className={'close'}
-                            onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
-                        >
-							{' '}
-                            &times;
-						</span>
                             <h1> Suggest any song </h1>
                             <h4> Your suggestion: </h4>
                             <input

@@ -50,10 +50,13 @@ const Events = ({ type }) => {
 				tmp.push({...doc.data(), id: doc.id});
 			}
 		});
+		console.log(tmp);
 		let needed_events = await Promise.all(tmp.map(async (event) => {
 			let copy_event = {...event};
 			copy_event.organizers = await Promise.all(event.organizers.map(async (organizer) => {
+				console.log(organizer);
 				let userSnapshot = await db.collection('users').doc(organizer).get();
+				console.log(userSnapshot.data());
 				return userSnapshot.data();
 			}));
 			return copy_event;

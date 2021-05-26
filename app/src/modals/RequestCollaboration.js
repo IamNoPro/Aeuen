@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {BsCheckCircle} from "react-icons/all";
+import { auth, db } from '../firebase';
 
 
-function RequestCollaboration({setToggleRequestModal, toggleRequestModal, setRequestedCollaboration, requestedCollaboration, eventInfo}) {
+function RequestCollaboration({setToggleRequestModal, toggleRequestModal, setRequestedCollaboration, requestedCollaboration, eventInfo, setEventInfo}) {
+    const [message, setMessage] = useState('');
+
     return (
         <>
             {toggleRequestModal && (
@@ -12,13 +15,6 @@ function RequestCollaboration({setToggleRequestModal, toggleRequestModal, setReq
                     onClick={() => setToggleRequestModal(!toggleRequestModal)}
                 >
                     <div className={'modal-content'} onClick={e => e.stopPropagation()}>
-						<span
-                            className={'close'}
-                            onClick={() => setToggleRequestModal(!toggleRequestModal)}
-                        >
-							{' '}
-                            &times;
-						</span>
                         <h1>
                             {' '}
                             {`Become a collaborator in ${eventInfo.organizers[0].name}'s ${eventInfo.title}!`}{' '}
@@ -28,6 +24,8 @@ function RequestCollaboration({setToggleRequestModal, toggleRequestModal, setReq
                             className={'my-input'}
                             type={'text'}
                             placeholder={'Type in something...'}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                         />
                         <br />
                         <div className={'modal-bottom'}>
@@ -38,10 +36,23 @@ function RequestCollaboration({setToggleRequestModal, toggleRequestModal, setReq
                                     setRequestedCollaboration(true);
 
                                     // TODO change the collaboration status!!
-                                    // setEventInfo({
-                                    //     ...eventInfo,
-                                    //     collaboration_status: 'requested'
-                                    // });
+                                    let collab_requests = [...eventInfo.collab_requests];
+                                    collab_requests.push({
+                                        user_id: auth.currentUser.uid,
+                                        status: 'pending',
+                                        message: message
+                                    });
+                                    setEventInfo({
+                                        ...eventInfo,
+                                        collab_requests: collab_requests
+                                    });
+                                    db.collection('events').doc(eventInfo.id).update({
+                                       collab_requests: collab_requests
+                                    }).then(() => {
+                                        console.log("Document successfully updated!");
+                                    }).catch((error) => {
+                                        console.log(error);
+                                    });
                                 }}
                             >
                                 {' '}

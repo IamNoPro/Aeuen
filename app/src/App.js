@@ -38,10 +38,10 @@ function App() {
 					<Header userLoggedIn={userLoggedIn}/>
 					<Switch>
 						<Route path={'/other-events'}>
-							<Events type="other-events" userLoggedIn={userLoggedIn} />
+							<Events type="other-events" />
 						</Route>
 						<Route path={'/my-events'}>
-							<Events type="my-events" userLoggedIn={userLoggedIn} />
+							<Events type="my-events" />
 						</Route>
 						<Route path={'/create-event'}>
 							<CreateEvent />

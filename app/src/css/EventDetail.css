@@ -31,6 +31,27 @@
     display: flex
 }
 
+.pending {
+    background-color: yellow;
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: yellow;
+}
+
+.accepted {
+    background-color: green;
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: green;
+}
+
+.rejected {
+    background-color: red;
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: red;
+}
+
 .organizer-avatar {
     margin-right: 10px;
     border-radius: 50%;

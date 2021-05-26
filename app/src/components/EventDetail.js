@@ -4,14 +4,16 @@ import {
 	BsMusicNoteBeamed,
 	BsMusicNoteList,
 	FaHandsHelping,
-	MdLibraryMusic
+	MdLibraryMusic,
+	IoPeopleSharp
 } from 'react-icons/all';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '../css/EventDetail.css';
 import { useLocation } from 'react-router-dom';
-import {db} from '../firebase';
+import {auth, db} from '../firebase';
 import SuggestSong from "../modals/SuggestSong";
 import RequestCollaboration from "../modals/RequestCollaboration";
+import RequestsList from "../modals/RequestsList";
 
 // {
 // 	id: 0,
@@ -79,7 +81,14 @@ function EventDetail({ type }) {
 
 	const getCollaborationStatus = () => {
 		// TODO
-		return 'REQUEST';
+		if(!eventInfo)
+			return 'REQUEST';
+		let status = 'REQUEST';
+		eventInfo.collab_requests.forEach((collab) => {
+			if(collab.user_id === auth.currentUser.uid)
+				status = collab.status.toUpperCase();
+		});
+		return status;
 	}
 
 	const formatted = (date) => {
@@ -134,27 +143,40 @@ function EventDetail({ type }) {
 				let userSnapshot = await db.collection('users').doc(organizer).get();
 				return userSnapshot.data();
 			}));
+			copy_event.id = event_id;
 			setEventInfo(copy_event);
 		});
 	}, [location.pathname]);
 
-	let modals = [
-		<SuggestSong
-			key={1}
-			setToggleSuggestModal={setToggleSuggestModal}
-			toggleSuggestModal={toggleSuggestModal}
-			setSuggestedSong={setSuggestedSong}
-			suggestedSong={suggestedSong}
-		/>,
-		<RequestCollaboration
-			key={2}
-			setToggleRequestModal={setToggleRequestModal}
-			toggleRequestModal={toggleRequestModal}
-			setRequestedCollaboration={setRequestedCollaboration}
-			requestedCollaboration={requestedCollaboration}
-			eventInfo={eventInfo}
-		/>
-	];
+	let modals = [];
+	if(type === 'other-events') {
+		modals = [
+			<SuggestSong
+				key={1}
+				setToggleSuggestModal={setToggleSuggestModal}
+				toggleSuggestModal={toggleSuggestModal}
+				setSuggestedSong={setSuggestedSong}
+				suggestedSong={suggestedSong}
+			/>,
+			<RequestCollaboration
+				key={2}
+				setToggleRequestModal={setToggleRequestModal}
+				toggleRequestModal={toggleRequestModal}
+				setRequestedCollaboration={setRequestedCollaboration}
+				requestedCollaboration={requestedCollaboration}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
+			/>
+		];
+	} else {
+		modals = [
+			<RequestsList
+				key={1}
+				setToggleRequestModal={setToggleRequestModal}
+				toggleRequestModal={toggleRequestModal}
+			/>
+		]
+	}
 
 	if (suggestedSong) {
 		setTimeout(() => {
@@ -167,7 +189,8 @@ function EventDetail({ type }) {
 			setRequestedCollaboration(false);
 		}, 5000);
 	}
-	if(eventInfo === null) {
+
+	if(!eventInfo) {
 		return (
 			<div className="centered spinner-border" role="status">
 				<span className="sr-only">Loading...</span>
@@ -175,58 +198,84 @@ function EventDetail({ type }) {
 		);
 	}
 
+	console.log(getCollaborationStatus());
+
 	let starting_date = new Date(eventInfo.start_date.seconds * 1000);
 	let ending_date = new Date(eventInfo.end_date.seconds * 1000);
-
-	console.log(eventInfo);
 
 	return (
 		<div className={'content'}>
 			{ modals }
 			<div className={'left-content'}>
 				<div className={'vertical'}>
-					<button
-						type="button"
-						className="btn btn-info action"
-						onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
-					>
-						{type === 'my-events' ? (
-							<div>
-								<div className="icon">
-									<BsMusicNoteList />
+					{type === 'my-events' ? (
+						<>
+							<button
+								type="button"
+								className="btn btn-info action"
+								onClick={() => console.log('suggested songs!')}
+							>
+								<div>
+									<div className="icon">
+										<BsMusicNoteList />
+									</div>
+									SUGGESTED
 								</div>
-								SUGGESTED
-							</div>
-						) : (
-							<div>
-								<div className="icon">
-									<MdLibraryMusic />
+							</button>
+							<button
+								type="button"
+								className="btn btn-info action"
+								onClick={() => console.log('playlist!')}
+							>
+								<div>
+									<div className="icon">
+										<BsMusicNoteBeamed />
+									</div>
+									PLAYLIST
 								</div>
-								SUGGEST SONG
-							</div>
-						)}
-					</button>
-					<button
-						type="button"
-						className="btn btn-info action"
-						onClick={() => setToggleRequestModal(!toggleRequestModal)}
-					>
-						{type === 'my-events' ? (
-							<div>
-								<div className="icon">
-									<BsMusicNoteBeamed />
+							</button>
+							<button
+								type="button"
+								className="btn btn-info action"
+								onClick={() => setToggleRequestModal(!toggleRequestModal)}
+							>
+								<div>
+									<div className="icon">
+										<IoPeopleSharp />
+									</div>
+									REQUESTS
 								</div>
-								PLAYLIST
-							</div>
-						) : (
-							<div>
-								<div className="icon">
-									<FaHandsHelping />
+							</button>
+						</>
+					) : (
+						<>
+							<button
+								type="button"
+								className="btn btn-info action"
+								onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
+							>
+								<div>
+									<div className="icon">
+										<MdLibraryMusic />
+									</div>
+									SUGGEST SONG
 								</div>
-								{getCollaborationStatus()}
-							</div>
-						)}
-					</button>
+							</button>
+							<button
+								type="button"
+								className={`btn btn-info action ${getCollaborationStatus().toLowerCase()}`}
+								onClick={() => setToggleRequestModal(!toggleRequestModal)}
+							>
+								<div>
+									<div className="icon">
+										<FaHandsHelping />
+									</div>
+									{getCollaborationStatus()}
+								</div>
+							</button>
+						</>
+					)}
+					
 				</div>
 			</div>
 			<div className={'mid-content'}>
