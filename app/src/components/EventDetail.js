@@ -346,7 +346,7 @@ function EventDetail({ type }) {
 								<img
 									key={organizer.name}
 									className={'organizer-avatar'}
-									src={organizer.picture}
+									src={organizer.picture ? organizer.picture : 'https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png'}
 									height={65}
 									width={65}
 								/>
