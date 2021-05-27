@@ -18,7 +18,7 @@ There we store all of our stylesheet files
 
 In this folder we store all of the popup modals (i.e: request collaboration, playlist, etc.)
 
-## componenets folder
+## components folder
 
 Main components are stored in this folder. 
 
