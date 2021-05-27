@@ -1,6 +1,6 @@
 # Aeuen
 
-We used React to build our project. Configurations are in app/package.json file. Main codes are in app/src/ folder. 
+We used React to develop our project. Configurations are in app/package.json file. Main codes are in app/src/ folder. 
 
 ## App.js
 
