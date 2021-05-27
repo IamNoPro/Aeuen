@@ -23,6 +23,7 @@
 }
 
 #vertical-bar {
+    min-width: 7px;
     width: 7px;
     height: 80px;
     background-color: black;
@@ -38,11 +39,20 @@
 
 .event-location {
     font-size: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
 }
 
 .event-host {
     font-size: 18px;
     color: gray;
+}
+
+.event-content {
+    flex: 1;
+    width: 80%;
+    overflow: hidden;
 }
 
 .goto-event-button {

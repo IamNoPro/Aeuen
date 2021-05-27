@@ -18,7 +18,10 @@ function SuggestSong({
 				<div
 					id="myModal"
 					className={'modal'}
-					onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
+					onClick={() => {
+						setSong('');
+						setToggleSuggestModal(!toggleSuggestModal);
+					}}
 				>
 					<div className={'modal-content'} onClick={e => e.stopPropagation()}>
 						<h1> Suggest any song </h1>
@@ -47,6 +50,7 @@ function SuggestSong({
 												setEventInfo(newEventInfo);
 												setToggleSuggestModal(!toggleSuggestModal);
 												setSuggestedSong(true);
+												setSong('');
 											});
 									}
 								}}
@@ -56,7 +60,10 @@ function SuggestSong({
 							</button>
 							<button
 								className={'my-modal-button-cancel'}
-								onClick={() => setToggleSuggestModal(!toggleSuggestModal)}
+								onClick={() => {
+									setSong('');
+									setToggleSuggestModal(!toggleSuggestModal);
+								}}
 							>
 								{' '}
 								CANCEL{' '}

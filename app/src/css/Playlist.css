@@ -1,0 +1,35 @@
+.song-list-container {
+    align-self: center;
+    width: 80%;
+    max-height: 400px;
+    overflow: auto;
+}
+
+.song-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    user-select: none;
+}
+
+.song-item:hover {
+    background-color: lightgrey;
+}
+
+.song-icon {
+    margin-right: 10px;
+}
+
+.song-text {
+    font-weight: bold;
+    font-size: 1.5em;
+    flex: 1;
+}
+
+.song-delete:hover {
+    cursor: pointer;
+}

@@ -152,7 +152,10 @@ function EventDetail({ type }) {
 							.collection('users')
 							.doc(organizer)
 							.get();
-						return userSnapshot.data();
+						return {
+							...userSnapshot.data(),
+							uid: organizer
+						};
 					})
 				);
 				copy_event.id = event_id;
@@ -160,8 +163,41 @@ function EventDetail({ type }) {
 			});
 	}, [location.pathname]);
 
+	if (!eventInfo) {
+		return (
+			<div className="centered spinner-border" role="status">
+				<span className="sr-only">Loading...</span>
+			</div>
+		);
+	}
+
 	let modals = [];
-	if (type === 'other-events') {
+	if (type === 'my-events' && eventInfo.organizers[0].uid === auth.currentUser.uid) {
+		modals = [
+			<RequestsList
+				key={1}
+				setToggleRequestModal={setToggleRequestModal}
+				toggleRequestModal={toggleRequestModal}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
+			/>,
+			<SuggestedList
+				key={2}
+				setToggleSuggestListModal={setSuggestedSongList}
+				toggleSuggestListModal={suggestedSongList}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
+			/>,
+			<Playlist
+				key={3}
+				setTogglePlaylistModal={setPlaylistModal}
+				togglePlaylistModal={playlistModal}
+				eventInfo={eventInfo}
+				setEventInfo={setEventInfo}
+			/>
+		];
+
+	} else {
 		modals = [
 			<SuggestSong
 				key={1}
@@ -182,26 +218,6 @@ function EventDetail({ type }) {
 				setEventInfo={setEventInfo}
 			/>
 		];
-	} else {
-		modals = [
-			<RequestsList
-				key={1}
-				setToggleRequestModal={setToggleRequestModal}
-				toggleRequestModal={toggleRequestModal}
-			/>,
-			<SuggestedList
-				setToggleSuggestListModal={setSuggestedSongList}
-				toggleSuggestListModal={suggestedSongList}
-				eventInfo={eventInfo}
-				setEventInfo={setEventInfo}
-			/>,
-			<Playlist
-				setTogglePlaylistModal={setPlaylistModal}
-				togglePlaylistModal={playlistModal}
-				eventInfo={eventInfo}
-				setEventInfo={setEventInfo}
-			/>
-		];
 	}
 
 	if (suggestedSong) {
@@ -216,15 +232,9 @@ function EventDetail({ type }) {
 		}, 5000);
 	}
 
-	if (!eventInfo) {
-		return (
-			<div className="centered spinner-border" role="status">
-				<span className="sr-only">Loading...</span>
-			</div>
-		);
-	}
 
 	console.log(getCollaborationStatus());
+	console.log(toggleSuggestModal);
 
 	let starting_date = new Date(eventInfo.start_date.seconds * 1000);
 	let ending_date = new Date(eventInfo.end_date.seconds * 1000);
@@ -234,7 +244,7 @@ function EventDetail({ type }) {
 			{modals}
 			<div className={'left-content'}>
 				<div className={'vertical'}>
-					{type === 'my-events' ? (
+					{(type === 'my-events' && eventInfo.organizers[0].uid === auth.currentUser.uid) ? (
 						<>
 							<button
 								type="button"
@@ -310,19 +320,19 @@ function EventDetail({ type }) {
 				</span>
 				<br />
 				<img className={'poster'} src={eventInfo.picture} width={400} />
-				<div className={'section'}>
+				<div key={1} className={'section'}>
 					<div className={'section-title'}> Description: </div>
 					<div className={'section-content'}> {eventInfo.description} </div>
 				</div>
-				<div className={'section'}>
+				<div key={2} className={'section'}>
 					<div className={'section-title'}> Starting Date: </div>
 					<div className={'section-content'}> {formatted(starting_date)} </div>
 				</div>
-				<div className={'section'}>
+				<div key={3} className={'section'}>
 					<div className={'section-title'}> Ending Date: </div>
 					<div className={'section-content'}> {formatted(ending_date)} </div>
 				</div>
-				<div className={'section'}>
+				<div key={4} className={'section'}>
 					<div className={'section-title'}> Venue: </div>
 					<div className={'map-container'} ref={mapContainer} />
 				</div>
@@ -351,7 +361,7 @@ function EventDetail({ type }) {
 							<div> Not available </div>
 						) : (
 							eventInfo.playlist.map((music, index) => {
-								return <div> {`${index}. ${music}`} </div>;
+								return <div> {`${index + 1}. ${music}`} </div>;
 							})
 						)}
 					</div>

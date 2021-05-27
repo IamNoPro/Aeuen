@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { auth, db } from '../firebase';
+import '../css/Playlist.css';
+import {BiMinusCircle, FcMusic} from "react-icons/all";
 
 function Playlist({
 	setTogglePlaylistModal,
@@ -18,28 +20,36 @@ function Playlist({
 		>
 			<div className={'modal-content'} onClick={e => e.stopPropagation()}>
 				<h1>{'Your playlist:'}</h1>
-				{eventInfo.playlist.map(song => (
-					<span>
-						{song}{' '}
-						<button
-							onClick={() => {
-								let newEventInfo = {
-									...eventInfo,
-									playlist: eventInfo.playlist.filter(play => play !== song)
-								};
+				<div className={'song-list-container'}>
+					{eventInfo.playlist.map((song, index) => (
+						<div key={index} className={'song-item'}>
+							<div className={'song-icon'}>
+								<FcMusic size={40}/>
+							</div>
+							<div className={'song-text'}>
+								{`${index + 1}. ${song}`}
+							</div>
+							<div
+								className={'song-delete'}
+								onClick={() => {
+									let newEventInfo = {
+										...eventInfo,
+										playlist: eventInfo.playlist.filter(play => play !== song)
+									};
 
-								db.collection('events')
-									.doc(eventInfo.id)
-									.update({ playlist: newEventInfo.playlist })
-									.then(() => {
-										setEventInfo(newEventInfo);
-									});
-							}}
-						>
-							Remove
-						</button>
-					</span>
-				))}
+									db.collection('events')
+										.doc(eventInfo.id)
+										.update({ playlist: newEventInfo.playlist })
+										.then(() => {
+											setEventInfo(newEventInfo);
+										});
+								}}
+							>
+								<BiMinusCircle size={40}/>
+							</div>
+						</div>
+					))}
+				</div>
 				<div className={'modal-bottom'}>
 					<button
 						className={'my-modal-button-submit'}
@@ -53,8 +63,7 @@ function Playlist({
 						className={'my-modal-button-cancel'}
 						onClick={() => setTogglePlaylistModal(!togglePlaylistModal)}
 					>
-						{' '}
-						CLOSE{' '}
+						CLOSE
 					</button>
 				</div>
 			</div>
