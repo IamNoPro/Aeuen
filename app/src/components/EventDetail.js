@@ -5,18 +5,27 @@ import {
 	BsMusicNoteList,
 	FaHandsHelping,
 	MdLibraryMusic,
-	IoPeopleSharp
+	IoPeopleSharp,
+	AiFillEdit
 } from 'react-icons/all';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '../css/EventDetail.css';
-import { useLocation } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import SuggestSong from '../modals/SuggestSong';
 import RequestCollaboration from '../modals/RequestCollaboration';
 import RequestsList from '../modals/RequestsList';
 import SuggestedList from '../modals/SuggestedList';
 import Playlist from '../modals/Playlist';
+import { Route, Link, Redirect, useLocation } from 'react-router-dom';
 
+import DateFnsUtils from '@date-io/date-fns'; // choose your lib
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+
+import PlacesAutoComplete, {
+    geocodeByAddress,
+    getLatLng
+} from 'react-places-autocomplete';
+  
 // {
 // 	id: 0,
 // 		title: 'Big Concert',
@@ -106,6 +115,20 @@ function EventDetail({ type }) {
 	let [suggestedSongList, setSuggestedSongList] = useState(false);
 	let [playlistModal, setPlaylistModal] = useState(false);
 
+	let [editModal, setEditModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState({
+        name: null,
+        file: null
+    });
+	const onChangeFile = (event) => {
+        console.log('selected file', event.target.files[0]);
+
+        setSelectedFile({
+                        name: event.target.files[0].name,
+                        file: URL.createObjectURL(event.target.files[0]),
+                        raw_file: event.target.files[0]
+                    });
+    }
 	const mapContainer = useRef(null);
 	const map = useRef(null);
 	const zoom = 15;
@@ -233,11 +256,14 @@ function EventDetail({ type }) {
 	}
 
 
-	console.log(getCollaborationStatus());
 	console.log(toggleSuggestModal);
 
 	let starting_date = new Date(eventInfo.start_date.seconds * 1000);
 	let ending_date = new Date(eventInfo.end_date.seconds * 1000);
+	
+	console.log(getCollaborationStatus());
+	console.log(starting_date);
+	console.log(ending_date);
 
 	return (
 		<div className={'content'}>
@@ -282,6 +308,20 @@ function EventDetail({ type }) {
 									REQUESTS
 								</div>
 							</button>
+
+								<button
+									type="button"
+									className="btn btn-info action"
+									onClick={() => setEditModal(!editModal)}
+								>
+									
+									<div>
+										<div className="icon">
+											<AiFillEdit />
+										</div>
+										EDIT
+									</div>
+								</button>
 						</>
 					) : (
 						<>
@@ -314,31 +354,194 @@ function EventDetail({ type }) {
 				</div>
 			</div>
 			<div className={'mid-content'}>
-				<span>
-					<span className={'title'}>{eventInfo.title}</span>
-					<span className={'host-name'}>by {eventInfo.organizers[0].name}</span>
-				</span>
-				<br />
-				<img className={'poster'} src={eventInfo.picture} width={400} />
-				<div key={1} className={'section'}>
-					<div className={'section-title'}> Description: </div>
-					<div className={'section-content'}> {eventInfo.description} </div>
-				</div>
-				<div key={2} className={'section'}>
-					<div className={'section-title'}> Starting Date: </div>
-					<div className={'section-content'}> {formatted(starting_date)} </div>
-				</div>
-				<div key={3} className={'section'}>
-					<div className={'section-title'}> Ending Date: </div>
-					<div className={'section-content'}> {formatted(ending_date)} </div>
-				</div>
-				<div key={4} className={'section'}>
-					<div className={'section-title'}> Venue: </div>
-					<div className={'map-container'} ref={mapContainer} />
-				</div>
+				{(type === 'my-events' && eventInfo.organizers[0].uid === auth.currentUser.uid && editModal) ? (
+					<div className='container-create'>
+
+					    <form className='create-event'>
+
+						<div className='form-control'>
+                            <label>Title</label>
+                            <input 
+                                type='text' 
+                                placeholder='Add Title'
+                                value={eventInfo.title}
+                                onChange={ (event) => {
+									let copy_event = {...eventInfo};
+									copy_event.title = event.target.value;
+									console.log(copy_event);
+                                    console.log(event.target.value);
+									setEventInfo(copy_event);
+                                } }
+                            />
+                        </div>
+						<div className='form-control'>
+                            <label>
+                                Poster
+                            </label>
+                            <label className='form-control-poster' style={{width: selectedFile.file ? '400px' : '150px'}}>
+                                { selectedFile.file ? selectedFile.name : 'Upload Picture'} <i className="fa fa-upload"></i> 
+                                <input 
+                                    id="upload" 
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={onChangeFile}
+                                />
+                            </label>
+                        </div>
+						
+						
+                        <div className='form-control form-control-description'>
+                            <label>Description</label>
+                            <textarea 
+                                placeholder='Add Description'
+                                value={eventInfo.description}
+                                onChange={ (event) => {
+									
+									let copy_event = {...eventInfo};
+									copy_event.description = event.target.value;
+									console.log(copy_event);
+                                    console.log(event.target.value);
+									setEventInfo(copy_event);
+                                } }
+                            />
+                        </div>
+
+                        <div className='form-control'>
+                            <label>Start Date & Time</label>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <DateTimePicker
+                                    value={eventInfo.start_date}
+                                    onChange={ (event) => {
+									console.log('HERE')
+									let copy_event = {...eventInfo};
+									copy_event.start_date = event;
+									console.log(copy_event);
+                                    console.log(event);
+									setEventInfo(copy_event);
+										}
+									}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
+                        </div>
+
+                        <div className='form-control'>
+                            <label>End Date & Time</label>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <DateTimePicker
+                                    value={eventInfo.end_date}
+                                    onChange={ (event) => {
+									
+								
+									let copy_event = {...eventInfo};
+									copy_event.end_date = event;
+									console.log(copy_event);
+                                    console.log(event);
+									starting_date = event;
+									setEventInfo(copy_event);
+									console.log('START DATE !!',starting_date);
+									} }
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
+                        </div>
+						
+						
+                        <div className='form-control'>
+                            <label>Location</label>
+                            <div>
+                                <PlacesAutoComplete 
+                                    value={eventInfo.location_name} 
+                                    onChange={(event) => {
+										
+									let copy_event = {...eventInfo};
+									copy_event.location_name = event;
+									console.log(copy_event);
+                                    console.log(event);
+									setEventInfo(copy_event);
+										console.log(event);
+									}} 
+                                    onSelect={(event) => {
+										console.log(event);
+									}}
+                                >
+                                    {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                    <div>
+                                        <input {...getInputProps({ placeholder: "Type address" }) }/>
+                                        
+                                        <div style={{margin: '10px', position: 'absolute', zIndex: 999}}>     
+                                            { loading ? <div>...loading</div> : null }
+                                            
+                                            { suggestions.map(suggestion => {
+                                                const style = {
+                                                backgroundColor: suggestion.active ? "#41b6e6" : "#fff"
+                                                };
+                                                
+                                                return (
+                                                    <div {...getSuggestionItemProps( suggestion, { style })}>
+                                                        {suggestion.description}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+										<div className={'map-container'} ref={mapContainer} />
+                                    </div>
+                                    )}
+                                </PlacesAutoComplete>
+                            </div>
+                        </div>
+                        
+                        <div style={{marginLeft: '150px'}}>
+                            <button 
+                                type='button' 
+                                value='Confirm' 
+                                className='my-button' 
+                                onClick={() => {
+                                    console.log('create event button');
+									setEditModal(!editModal);
+								}}
+                            >
+                                <div>Apply changes</div>
+                            </button>
+                        </div>
+                    </form>
+					</div>
+				) : (
+					<>
+						<span>
+							<span className={'title'}>{eventInfo.title}</span>
+							<span className={'host-name'}>by {eventInfo.organizers[0].name}</span>
+						</span>
+						<br />
+						<div key={1} className={'section'}>
+							<div className={'section-title'}> Description: </div>
+							<div className={'section-content'}> {eventInfo.description} </div>
+						</div>
+						<div key={2} className={'section'}>
+							<div className={'section-title'}> Starting Date: </div>
+							<div className={'section-content'}> {formatted(starting_date)} </div>
+						</div>
+						<div key={3} className={'section'}>
+							<div className={'section-title'}> Ending Date: </div>
+							<div className={'section-content'}> {formatted(ending_date)} </div>
+						</div>
+						<div key={4} className={'section'}>
+							<div className={'section-title'}> Venue: </div>
+							<div className={'map-container'} ref={mapContainer} />
+						</div>
+					</>
+				)}
 			</div>
-			<div className={'right-content'}>
+			<div className={'right-content'}  style={{ marginTop: '50px' }}>
 				<div className={'clickable-section'}>
+
+					{ selectedFile.file ? <img className='poster' src={selectedFile.file} width={300}></img> : <img className={'poster'} src={eventInfo.picture} width={300} /> }
+
 					<div className={'section-title clickable'}> Organizers: </div>
 					<div className={'organizers'}>
 						{eventInfo.organizers.map(organizer => {

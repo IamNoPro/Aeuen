@@ -76,7 +76,7 @@ const CreateEvent = (props) => {
     }
 
     const addFirestore = () => {
-        if (!selectedFile.raw_file) return;
+        
         const uploadTask = storage.ref(`images/${selectedFile.name}`).put(selectedFile.raw_file);
         uploadTask.on(
           "state_changed",
@@ -143,28 +143,49 @@ const CreateEvent = (props) => {
                                 {' '}
                                 &times;
                             </span>
-                            <h2> Event Succesfully Created </h2>
-                            
-                            <div className={'modal-bottom'}>
-                                <Link to='/my-events'>
-                                    <button
-                                        className={'my-modal-button-submit'}
-                                        onClick={() => {
-                                            setToggleCreateModal(!toggleCreateModal)
-                                            addFirestore()
-                                        }}
-                                    >
-                                        {' '}
-                                        OK{' '}
-                                    </button>
-                                </Link>
-							</div>
+
+                            { !selectedFile.raw_file ? 
+                            (
+                                <>
+                                    <h2 style={{alignSelf: 'center'}}>Please Select Poster</h2>
+                                    <div className={'modal-bottom'}>
+                                        <button
+                                            className={'my-modal-button-submit'}
+                                            onClick={() => {
+                                                setToggleCreateModal(!toggleCreateModal)
+                                            }}
+                                        >
+                                            {' '}
+                                            OK{' '}
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <h2> Event Succesfully Created </h2>
+                                    
+                                    <div className={'modal-bottom'}>
+                                        <Link to='/my-events'>
+                                            <button
+                                                className={'my-modal-button-submit'}
+                                                onClick={() => {
+                                                    setToggleCreateModal(!toggleCreateModal)
+                                                    addFirestore()
+                                                }}
+                                            >
+                                                {' '}
+                                                OK{' '}
+                                            </button>
+                                        </Link>
+                                    </div>
+                                 </>
+                            )}   
                         </div> 
                     </div>
             )}
                 
             <div className='left-content'/>
-            <div className='mid-content container-create'>
+            <div className='mid-content'>
                 <div className='container-create'>
                     <form className='create-event'>
                         <h1 align='center'>Create a new event</h1>

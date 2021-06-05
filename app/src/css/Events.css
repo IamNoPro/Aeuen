@@ -40,7 +40,8 @@
 }
 
 .left-content {
-    margin-right: 20px;
+    margin-left: -120px;
+    margin-right: 140px;
     flex-basis: 180px;
     flex-shrink: 0;
 }
@@ -55,6 +56,7 @@
 }
 
 .right-content {
+    margin-right: -120px;
     flex-basis: 200px;
     flex-shrink: 0;
 }
