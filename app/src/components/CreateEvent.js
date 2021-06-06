@@ -18,6 +18,8 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 import { storage } from '../firebase'
 import firebase from "firebase/app";
 import "firebase/auth";
+import axios from 'axios';
+
 
 const CreateEvent = (props) => {
     console.log('create event!!');
@@ -39,18 +41,34 @@ const CreateEvent = (props) => {
       lat: null,
       lng: null
     });
-  
+    let marker = null;
+
 	const mapContainer = useRef(null);
 	const map = useRef(null);
-    const zoom = 4;
+    const zoom = 12;
 
 	useEffect(() => {
 		if (map.current) return;
 		map.current = new mapboxgl.Map({
 			container: mapContainer.current,
 			style: 'mapbox://styles/mapbox/streets-v11',
-			zoom: zoom
+			zoom: zoom,
+            center: [127.3810255, 36.35057]
 		});
+		map.current.on('style.load', () => {
+		   map.current.on('click', async (e) => {
+		      console.log(e.lngLat);
+		      console.log(marker);
+		      if(marker)
+		         marker.remove();
+
+		      marker = new mapboxgl.Marker().setLngLat(e.lngLat).addTo(map.current);
+		      let API_KEY = 'LOL'; // TODO: HIDE THE ACTUAL API_BEFORE COMMITTING!!!
+               let resp = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${e.lngLat.lat},${e.lngLat.lng}&key=${API_KEY}`);
+		      console.log(resp);
+		      setAddress(resp.data.results[0].formatted_address);
+           });
+        });
 		console.log(map);
 	});
   
@@ -107,7 +125,6 @@ const CreateEvent = (props) => {
                     'collab_requests': [],
                     'picture': url,
                 }
-
 
                 events.add(event).then(function(eventRef) {
                     users.doc(user.uid).update({
@@ -185,7 +202,7 @@ const CreateEvent = (props) => {
                             <label>
                                 Poster
                             </label>
-                            <label className='form-control-poster' style={{width: selectedFile.file ? '400px' : '150px'}}>
+                            <label className='form-control-poster'>
                                 { selectedFile.file ? selectedFile.name : 'Upload Picture'} <i className="fa fa-upload"></i> 
                                 <input 
                                     id="upload" 

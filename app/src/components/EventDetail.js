@@ -94,6 +94,13 @@ function EventDetail({ type }) {
 		return `${hours}:${minutes}, ${dayName}, ${date.getDate()} ${monthName} ${date.getFullYear()}`;
 	};
 
+	const getLongLat = () => {
+		return [
+			eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
+			eventInfo.location.lat ? eventInfo.location.lat : 36.36849
+		];
+	}
+
 	let location = useLocation();
 
 	let [toggleSuggestModal, setToggleSuggestModal] = useState(false);
@@ -108,7 +115,7 @@ function EventDetail({ type }) {
 
 	const mapContainer = useRef(null);
 	const map = useRef(null);
-	const zoom = 15;
+	const zoom = 16;
 	const [eventInfo, setEventInfo] = useState(null);
 
 	useEffect(() => {
@@ -126,12 +133,10 @@ function EventDetail({ type }) {
 			map.current = new mapboxgl.Map({
 				container: mapContainer.current,
 				style: 'mapbox://styles/mapbox/streets-v11',
-				center: [
-					eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
-					eventInfo.location.lat ? eventInfo.location.lat : 36.36849
-				],
+				center: getLongLat(),
 				zoom: zoom
 			});
+			let marker = new mapboxgl.Marker().setLngLat(getLongLat()).addTo(map.current);
 		}
 		// console.log(map);
 	}, [eventInfo]);

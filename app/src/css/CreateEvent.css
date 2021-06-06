@@ -1,5 +1,5 @@
 .container-create {
-  max-width: 500px;
+  max-width: 100%;
   margin: 30px auto;
   min-height: 300px;
   padding: 30px;
@@ -49,6 +49,9 @@ textarea {
 }
 
 .form-control-poster {
+  overflow: hidden;
+
+  width: auto;
   border: 1px solid #ccc;
   border-radius: 5px;
   display: inline-block;
