@@ -99,7 +99,7 @@ function EventDetail({ type }) {
 			eventInfo.location.lng ? eventInfo.location.lng : 127.356424,
 			eventInfo.location.lat ? eventInfo.location.lat : 36.36849
 		];
-	}
+	};
 
 	let location = useLocation();
 
@@ -136,7 +136,9 @@ function EventDetail({ type }) {
 				center: getLongLat(),
 				zoom: zoom
 			});
-			let marker = new mapboxgl.Marker().setLngLat(getLongLat()).addTo(map.current);
+			let marker = new mapboxgl.Marker()
+				.setLngLat(getLongLat())
+				.addTo(map.current);
 		}
 		// console.log(map);
 	}, [eventInfo]);
@@ -177,7 +179,10 @@ function EventDetail({ type }) {
 	}
 
 	let modals = [];
-	if (type === 'my-events' && eventInfo.organizers[0].uid === auth.currentUser.uid) {
+	if (
+		type === 'my-events' &&
+		eventInfo.organizers[0].uid === auth.currentUser.uid
+	) {
 		modals = [
 			<RequestsList
 				key={1}
@@ -201,7 +206,6 @@ function EventDetail({ type }) {
 				setEventInfo={setEventInfo}
 			/>
 		];
-
 	} else {
 		modals = [
 			<SuggestSong
@@ -237,7 +241,6 @@ function EventDetail({ type }) {
 		}, 5000);
 	}
 
-
 	console.log(getCollaborationStatus());
 	console.log(toggleSuggestModal);
 
@@ -249,7 +252,8 @@ function EventDetail({ type }) {
 			{modals}
 			<div className={'left-content'}>
 				<div className={'vertical'}>
-					{(type === 'my-events' && eventInfo.organizers[0].uid === auth.currentUser.uid) ? (
+					{type === 'my-events' &&
+					eventInfo.organizers[0].uid === auth.currentUser.uid ? (
 						<>
 							<button
 								type="button"
@@ -260,7 +264,11 @@ function EventDetail({ type }) {
 									<div className="icon">
 										<BsMusicNoteList />
 									</div>
-									SUGGESTED
+									<span>SUGGESTED</span>
+
+									<span style={{ marginLeft: '30px' }}>
+										{eventInfo.suggestions.length}
+									</span>
 								</div>
 							</button>
 							<button
@@ -284,7 +292,17 @@ function EventDetail({ type }) {
 									<div className="icon">
 										<IoPeopleSharp />
 									</div>
-									REQUESTS
+									<span>REQUESTS</span>
+
+									<span style={{ marginLeft: '40px' }}>
+										{eventInfo.collab_requests.reduce(
+											(accumulator, element) =>
+												element.status === 'pending'
+													? accumulator + 1
+													: accumulator,
+											0
+										)}
+									</span>
 								</div>
 							</button>
 						</>
@@ -351,7 +369,11 @@ function EventDetail({ type }) {
 								<img
 									key={organizer.name}
 									className={'organizer-avatar'}
-									src={organizer.picture ? organizer.picture : 'https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png'}
+									src={
+										organizer.picture
+											? organizer.picture
+											: 'https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png'
+									}
 									height={65}
 									width={65}
 								/>
