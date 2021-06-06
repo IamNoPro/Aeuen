@@ -19,7 +19,7 @@ import { storage } from '../firebase'
 import firebase from "firebase/app";
 import "firebase/auth";
 import axios from 'axios';
-import {google_places_api} from "../APIKeys";
+import google_places_api from "../APIKeys";
 
 
 const CreateEvent = (props) => {
@@ -67,6 +67,10 @@ const CreateEvent = (props) => {
                let resp = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${e.lngLat.lat},${e.lngLat.lng}&key=${google_places_api}`);
 		      console.log(resp);
 		      setAddress(resp.data.results[0].formatted_address);
+		      setCoordinates({
+                  lng: e.lngLat.lng,
+                  lat: e.lngLat.lat
+		      });
            });
         });
 		console.log(map);

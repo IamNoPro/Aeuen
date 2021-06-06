@@ -7,10 +7,9 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 import Login from './components/Login';
 import Signup from './components/Signup';
 import { auth } from './firebase'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './css/App.css';
-// import 'antd/dist/antd.css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import google_places_api from "./APIKeys";
 
 mapboxgl.accessToken =
 	'pk.eyJ1IjoicG9sbHV4eCIsImEiOiJja29qcWEybDQxZWlqMndvOXh5bGJkMXh4In0.-F11fMMGsYF9SMiEG-PP3w';
@@ -26,39 +25,54 @@ function App() {
 		}
 	});
 
+	useEffect(() => {
+		const script = document.createElement('script');
+
+		script.src = `https://maps.googleapis.com/maps/api/js?key=${google_places_api}&libraries=places`;
+		script.async = true;
+
+		document.body.appendChild(script);
+
+		// return () => {
+		// 	document.body.removeChild(script);
+		// }
+	}, []);
+
 	if(userLoggedIn === null)
 		return (<div className="centered spinner-border" role="status">
 					<span className="sr-only">Loading...</span>
 				</div>);
 
 	return (
-		<Router>
-			<div className="App">
-				<div className={'container'}>
-					<Header userLoggedIn={userLoggedIn}/>
-					<Switch>
-						<Route path={'/other-events'}>
-							<Events type="other-events" />
-						</Route>
-						<Route path={'/my-events'}>
-							<Events type="my-events" />
-						</Route>
-						<Route path={'/create-event'}>
-							<CreateEvent />
-						</Route>
-						<Route path={'/login'}>
-							<Login />
-						</Route>
-						<Route path={'/signup'}>
-							<Signup />
-						</Route>
-						<Route path={'/'}>
-							<Infosection userLoggedIn={userLoggedIn}/>
-						</Route>
-					</Switch>
+		<>
+			<Router>
+				<div className="App">
+					<div className={'container'}>
+						<Header userLoggedIn={userLoggedIn}/>
+						<Switch>
+							<Route path={'/other-events'}>
+								<Events type="other-events" />
+							</Route>
+							<Route path={'/my-events'}>
+								<Events type="my-events" />
+							</Route>
+							<Route path={'/create-event'}>
+								<CreateEvent />
+							</Route>
+							<Route path={'/login'}>
+								<Login />
+							</Route>
+							<Route path={'/signup'}>
+								<Signup />
+							</Route>
+							<Route path={'/'}>
+								<Infosection userLoggedIn={userLoggedIn}/>
+							</Route>
+						</Switch>
+					</div>
 				</div>
-			</div>
-		</Router>
+			</Router>
+		</>
 	);
 }
 
