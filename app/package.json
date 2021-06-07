@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "clean": "aws s3 rm --recursive s3://aeuen-deploy",
-    "deploy": "aws s3 sync public/ s3://aeuen-deploy"
+    "deploy": "aws s3 sync build/ s3://aeuen-deploy"
   },
   "eslintConfig": {
     "extends": [
