@@ -98,7 +98,30 @@ const CreateEvent = (props) => {
     }
 
     const addFirestore = () => {
-        if (!selectedFile.raw_file) return;
+        if (!selectedFile.raw_file) {
+            let event = {
+                'title': title,
+                'description': description,
+                'organizers': [user.uid],
+                'location': cooordinates,
+                'location_name': address,
+                'start_date': startDate,
+                'end_date': endDate,
+                'playlist': [],
+                'suggestions': [],
+                'collab_requests': [],
+            }
+
+            events.add(event).then(function(eventRef) {
+                users.doc(user.uid).update({
+                    'events': firebase.firestore.FieldValue.arrayUnion(eventRef.id)
+                })
+                console.log(eventRef.id)
+            })
+            console.log(event)
+          
+            return;
+        }
         const uploadTask = storage.ref(`images/${selectedFile.name}`).put(selectedFile.raw_file);
         uploadTask.on(
           "state_changed",
