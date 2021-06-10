@@ -102,6 +102,8 @@ const CreateEvent = (props) => {
 
     const addFirestore = () => {
         if (!selectedFile.raw_file) {
+            console.log('asdasadsasad');
+
             let event = {
                 'title': title,
                 'description': description,
@@ -118,11 +120,12 @@ const CreateEvent = (props) => {
             events.add(event).then(function(eventRef) {
                 users.doc(user.uid).update({
                     'events': firebase.firestore.FieldValue.arrayUnion(eventRef.id)
-                })
+                });
+                setLoading(false);
+                history.push('/my-events');
                 console.log(eventRef.id)
             })
-            console.log(event)
-          
+
             return;
         }
         
