@@ -3,7 +3,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import '../css/CreateEvent.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import DateFnsUtils from '@date-io/date-fns'; // choose your lib
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -27,6 +27,7 @@ const CreateEvent = (props) => {
     let user = firebase.auth().currentUser;
     let events = firebase.firestore().collection('events')
     let users = firebase.firestore().collection('users')
+    let history = useHistory();
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -42,6 +43,8 @@ const CreateEvent = (props) => {
       lat: null,
       lng: null
     });
+    const [loading, setLoading] = useState(false);
+
     let marker = null;
 
 	const mapContainer = useRef(null);
@@ -157,7 +160,9 @@ const CreateEvent = (props) => {
                 events.add(event).then(function(eventRef) {
                     users.doc(user.uid).update({
                         'events': firebase.firestore.FieldValue.arrayUnion(eventRef.id)
-                    })
+                    });
+                    setLoading(false);
+                    history.push('/my-events');
                     console.log(eventRef.id)
                 })
                 console.log(event)
@@ -191,18 +196,28 @@ const CreateEvent = (props) => {
                             <h2> Event Succesfully Created </h2>
                             
                             <div className={'modal-bottom'}>
-                                <Link to='/my-events'>
-                                    <button
-                                        className={'my-modal-button-submit'}
-                                        onClick={() => {
-                                            setToggleCreateModal(!toggleCreateModal)
-                                            addFirestore()
-                                        }}
-                                    >
-                                        {' '}
-                                        OK{' '}
-                                    </button>
-                                </Link>
+                                {
+                                    loading
+                                        ?
+                                            <button
+                                                className={'my-modal-button-submit'}
+                                                disabled
+                                            >
+                                                <span class="spinner-border spinner-border-sm" role="status" style={{marginRight: 5}} aria-hidden="true"/>
+                                                Loading...
+                                            </button>
+                                        :
+                                            <button
+                                                className={'my-modal-button-submit'}
+                                                onClick={() => {
+                                                    setLoading(true);
+                                                    addFirestore()
+                                                }}
+                                            >
+                                                OK
+                                            </button>
+
+                                }
 							</div>
                         </div> 
                     </div>
