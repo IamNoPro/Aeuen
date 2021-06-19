@@ -74,7 +74,6 @@ function EventDetail({ type }) {
 	const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 	const getCollaborationStatus = () => {
-		// TODO
 		if (!eventInfo) return 'REQUEST';
 		let status = 'REQUEST';
 		eventInfo.collab_requests.forEach(collab => {
@@ -393,6 +392,7 @@ function EventDetail({ type }) {
 						)}
 					</div>
 				</div>
+				{type === 'my-events' && <span>Number of participants: 100</span>}
 			</div>
 		</div>
 	);
