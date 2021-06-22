@@ -4,7 +4,8 @@ import {
 	BiCalendarCheck,
 	BiLogIn,
 	BiLogOut,
-	AiOutlineForm
+	AiOutlineForm,
+	IoMdNotificationsOutline
 } from 'react-icons/all';
 import { Link, useLocation } from 'react-router-dom';
 import { auth } from '../firebase';
@@ -47,7 +48,17 @@ function Header(props) {
 					<span style={{ marginLeft: 5 }}> My Events </span>
 				</Link>
 			)}
-
+			{props.userLoggedIn && (
+				<Link
+					to={'/notifications'}
+					className={`second-button my-link ${
+						path[1] == 'other-events' ? 'chosen' : ''
+					}`}
+				>
+					<IoMdNotificationsOutline />
+					<span style={{ marginLeft: 5 }}> Notifications </span>
+				</Link>
+			)}
 			{props.userLoggedIn && (
 				<Link
 					to={'/'}
