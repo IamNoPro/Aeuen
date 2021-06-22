@@ -10,6 +10,7 @@ import { auth } from './firebase'
 import React, {useEffect, useState} from 'react'
 import './css/App.css';
 import google_places_api from "./APIKeys";
+import Notifications from './components/Notifications';
 
 mapboxgl.accessToken =
 	'pk.eyJ1IjoicG9sbHV4eCIsImEiOiJja29qcWEybDQxZWlqMndvOXh5bGJkMXh4In0.-F11fMMGsYF9SMiEG-PP3w';
@@ -64,6 +65,9 @@ function App() {
 							</Route>
 							<Route path={'/signup'}>
 								<Signup />
+							</Route>
+							<Route path={'/notifications'}>
+								<Notifications></Notifications>
 							</Route>
 							<Route path={'/'}>
 								<Infosection userLoggedIn={userLoggedIn}/>
